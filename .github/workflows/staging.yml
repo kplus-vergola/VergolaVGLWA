@@ -1,0 +1,22 @@
+name: Try GitHub Actions
+
+on:
+  push:
+    branches:
+      - staging
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, githubsample-runner]
+
+    steps:
+      - name: Configure Git
+        run: |
+          git config --global user.email "vergola.github@knowdgeplus.net.au"
+          git config --global user.name "kplus-vergola"
+    
+      - name: Deploy Application
+        run: |
+          cd C:/Users/Jezmahboi/Projects/githubsample/staging/githubsample
+
+          git pull origin staging

@@ -1,0 +1,22 @@
+name: Try GitHub Actions
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, vergola-victoria-live]
+
+    steps:
+      - name: Configure Git
+        run: |
+          git config --global user.email "vergola.github@knowdgeplus.net.au"
+          git config --global user.name "kplus-vergola"
+    
+      - name: Deploy Application
+        run: |
+          cd C:/xampp/htdocs/production/VergolaVGLWA
+
+          git pull origin main
