@@ -1,4 +1,4 @@
-name: Try GitHub Actions
+name: Deploy To Main
 
 on:
   push:
