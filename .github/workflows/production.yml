@@ -12,8 +12,8 @@ jobs:
     steps:
       - name: Configure Git
         run: |
-          # git config --global user.email "vergola.github@knowdgeplus.net.au"
-          # git config --global user.name "kplus-vergola"
+          git config --global user.email "vergola.github@knowdgeplus.net.au"
+          git config --global user.name "kplus-vergola"
     
       - name: Deploy Application
         run: |
