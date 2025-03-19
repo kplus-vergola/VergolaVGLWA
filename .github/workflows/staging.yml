@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: [self-hosted, githubsample-runner]
+    runs-on: [self-hosted, vergola-vglwa-staging]
 
     steps:
       - name: Configure Git
@@ -17,6 +17,6 @@ jobs:
     
       - name: Deploy Application
         run: |
-          cd C:/Users/Jezmahboi/Projects/githubsample/staging/githubsample
+          cd C:/xampp/htdocs/staging/VergolaVGLWA
 
           git pull origin staging
