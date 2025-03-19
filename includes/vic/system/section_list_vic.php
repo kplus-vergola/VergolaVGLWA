@@ -74,7 +74,7 @@ $SectionID = $record['sectionid'];
     echo "<tr class='pointer' onclick=location.href='" . $this->baseurl . "section-listing-vic/section-updatelist-vic?sectionid={$record['sectionid']}' ><td>{$record['section']}</td> <td>";
 	
 	//Getting Categories
-	$resultcat = mysql_query("SELECT category FROM ver_chronoforms_data_section_vic WHERE sectionid = '$SectionID' ORDER BY category ASC");
+	$resultcat = mysql_query("SELECT category FROM ver_chronoforms_data_section_vic WHERE sectionid = '$SectionID' AND status !='deleted' ORDER BY category ASC");
 	while ($recordcat = mysql_fetch_row($resultcat)) {
 		echo $recordcat[0]."<br/>";
 	}

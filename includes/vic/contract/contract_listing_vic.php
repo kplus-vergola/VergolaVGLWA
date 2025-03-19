@@ -871,7 +871,7 @@ echo "
 		</label>
 	";
 
-echo " <label class='input'><span>CRV</span><input type='input' name='search_ID' value='".($search_ID!=''?$search_ID:"")."' style='border:1px solid #7C7D7F;' ></label>";
+echo " <label class='input'><span>CRW</span><input type='input' name='search_ID' value='".($search_ID!=''?$search_ID:"")."' style='border:1px solid #7C7D7F;' ></label>";
 
 
 echo "
@@ -910,10 +910,10 @@ $html = "";
 if(HOST_SERVER=="Victoria" || HOST_SERVER=="LA"){
 	 
 	if(isset($_POST['download_pdf'])==false){	
-		// $html .= "<table id=\"contract_table_list\" class=\"listing-table table-bordered\" style=\"font-family: Arial; font-size: 5pt;\"><tbody><tr  class='th-smaller'>".($is_admin?"<th width=\"\">Consultant</th>  ":"")."<th width=\"\">Contract ID</th><th width=\"50\">CRV</th><th width=\"\">Client Name</th><th width=\"\">Site Address</th><th>Contract Date</th><th>Total Price</th>  <th>Check Measure Date</th><th>Check Measurer</th><th>Drawing Approval</th><th>Permit Application</th>";
+		// $html .= "<table id=\"contract_table_list\" class=\"listing-table table-bordered\" style=\"font-family: Arial; font-size: 5pt;\"><tbody><tr  class='th-smaller'>".($is_admin?"<th width=\"\">Consultant</th>  ":"")."<th width=\"\">Contract ID</th><th width=\"50\">CRW</th><th width=\"\">Client Name</th><th width=\"\">Site Address</th><th>Contract Date</th><th>Total Price</th>  <th>Check Measure Date</th><th>Check Measurer</th><th>Drawing Approval</th><th>Permit Application</th>";
 		$html .= "<table id=\"contract_table_list\" class=\"listing-table table-bordered\" style=\"font-family: Arial; font-size: 5pt;\"><tbody><tr  class='th-smaller'>".($is_admin?"<th width=\"\">
 			Consultant</th>  ":"")."<th width=\"\">
-			Contract ID</th><th width=\"50\">CRV</th><th width=\"\">
+			Contract ID</th><th width=\"50\">CRW</th><th width=\"\">
 			Client Name</th><th width=\"\">
 			Site Address</th><th>
 			Client Mobile Number</th><th>
@@ -940,7 +940,7 @@ if(HOST_SERVER=="Victoria" || HOST_SERVER=="LA"){
 		$html .= "<table border=\"1\" cellpadding=\"1\" ><tbody><tr >".($is_admin?"<th width=\"50\">
 			Consultant</th>  ":"")."<th width=\"50\">
 			Contract ID</th><th width=\"50\">
-			CRV</th><th width=\"80\">
+			CRW</th><th width=\"80\">
 			Client Name</th><th width=\"100\">
 			Site Address</th> <th width=\"65\">
 			Client Mobile Number</th><th width=\"60\">

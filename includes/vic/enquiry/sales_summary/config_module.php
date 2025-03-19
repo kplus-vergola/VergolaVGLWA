@@ -46,7 +46,7 @@ $config = array(
             'local' => array(
                 array('name' => 'http://victoria.vergola.com/', 'port' => '80'), 
                 array('name' => 'victoria.vergola.com', 'port' => '80'), 
-				array('name' => 'vic.vergola.com', 'port' => '80'), 
+                array('name' => 'vic.vergola.com', 'port' => '80'), 
                 array('name' => 'victoria.vergola.com', 'port' => '82'),  
                 array('name' => 'as-live.victoria.vergola.com', 'port' => '80'),
                 array('name' => 'as-live.vic.vergola.com', 'port' => '80')
@@ -63,7 +63,22 @@ $config = array(
                 array('name' => 'vglvic.vergola.com'), 
                 array('name' => 'vglvic.vergola.com', 'port' => '3000') 
             ) 
-        )
+        ),
+        'wa' => array(
+            'local' => array(
+                array('name' => 'http://as-local.vglwa.vergola.com/', 'port' => '80'),                 
+                array('name' => 'as-local.vglwa.vergola.com', 'port' => '80')
+
+            ), 
+            'preproduction' => array(
+                array('ip' => '192.168.0.6', 'port' => '8000'), 
+                array('name' => 'vglwa.knowledgeplus.net.au', 'port' => '8000')
+            ), 
+            'live' => array(                
+                array('name' => 'vglwa.vergola.com', 'port' => '8000'), 
+                array('name' => 'vglwa.vergola.com', 'port' => '8000') 
+            ) 
+        )        
     ), 
     'path' => array(
         'app_folder' => '', 
@@ -102,6 +117,9 @@ $config = array(
 
 
 // --- get access info to determine processing condition --- //
+// $server_host = $_SERVER['HTTP_HOST']; 
+$_SERVER['SERVER_NAME'] = $_SERVER['HTTP_HOST'];
+// $_SERVER['SERVER_PORT'] = $_SERVER['HTTP_HOST_PORT'];
 if (isset($_SERVER['SERVER_NAME'])) {
     // --- when http call --- //
     $config['access_method'] = 'http';
@@ -120,7 +138,6 @@ if (isset($_SERVER['SERVER_NAME'])) {
             }
         }
     }
-
     if ($is_server_mode_local == true) {
         $input_data['server_mode'] = 'local';
         $input_data['vergola_region'] = $server_mode_local_region_name;

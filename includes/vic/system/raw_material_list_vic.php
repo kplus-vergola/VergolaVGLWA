@@ -71,7 +71,7 @@ $start = ($page-1) * NUMBER_PER_PAGE;
 * variables passed in the URL because someone clicked on a page number
 **/
 $search = $_POST['search_string'];
-$sql = "SELECT *, m.cf_id AS materialid, IF((IFNULL(m.display_order, 0)=0), '', m.display_order) as displayorder FROM ver_chronoforms_data_materials_vic AS m LEFT JOIN ver_chronoforms_data_supplier_vic AS s ON s.supplierid=m.supplierid  WHERE 1=1 ";
+$sql = "SELECT *, m.cf_id AS materialid, IF((IFNULL(m.display_order, 0)=0), '', m.display_order) as displayorder FROM ver_chronoforms_data_materials_vic AS m LEFT JOIN ver_chronoforms_data_supplier_vic AS s ON s.supplierid=m.supplierid  WHERE 1=1 AND m.status != 'deleted'";
 $result = mysql_query($sql) or die(mysql_error());
 
 if ($search){

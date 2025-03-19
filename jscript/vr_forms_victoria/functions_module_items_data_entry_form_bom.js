@@ -67,15 +67,15 @@
                 document.getElementById('item_dimension_girth_side_a_info_form_bom_area').style.display = 'block';
                 document.getElementById('item_dimension_girth_side_b_info_form_bom_area').style.display = 'block';
 
-                document.getElementById('item_dimension_girth_side_a_sum_method_form_bom_area').innerHTML = '(F+A+P+C+E+G+H)';
-                document.getElementById('item_dimension_girth_side_b_sum_method_form_bom_area').innerHTML = '(F+B+P+D+E+G+H)';
+                document.getElementById('item_dimension_girth_side_a_sum_method_form_bom_area').innerHTML = '(A+C+E+F+G+H+P)';
+                document.getElementById('item_dimension_girth_side_b_sum_method_form_bom_area').innerHTML = '(B+D+E+F+G+H+P)';
             } else {
                 if (target_vr_section_ref_name.search('flashing') >= 0) {
                     document.getElementById('item_dimension_girth_side_a_info_form_bom_area').style.display = 'block';
-                    document.getElementById('item_dimension_girth_side_b_info_form_bom_area').style.display = 'none';
+                    document.getElementById('item_dimension_girth_side_b_info_form_bom_area').style.display = 'block';
 
-                    document.getElementById('item_dimension_girth_side_a_sum_method_form_bom_area').innerHTML = '(F+A+P+C+E+G+H)';
-                    document.getElementById('item_dimension_girth_side_b_sum_method_form_bom_area').innerHTML = '(F+B+P+D+E+G+H)';
+                    document.getElementById('item_dimension_girth_side_a_sum_method_form_bom_area').innerHTML = '(A+C+E+F+G+H+P)';
+                    document.getElementById('item_dimension_girth_side_b_sum_method_form_bom_area').innerHTML = '(B+D+E+F+G+H+P)';
                 }
             }
 

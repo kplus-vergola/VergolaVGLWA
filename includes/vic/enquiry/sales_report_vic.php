@@ -50,7 +50,7 @@ if(isset($user->groups['10'])){
 	$user_group = "sales_manager";
 }else if( isset($user->groups['28'])){
 	$is_reception = 1;
-	return;
+	// return;
 }else if( isset($user->groups['29'])){
 	$is_account_user = 1;
 	// return;
@@ -189,6 +189,7 @@ $qry_filter = "";
 $qry_filter2 = "";
 $consultant_filter = ""; //version 2 of $qry_filter
 //$consultant_filter2 = ""; //version 2 of $qry_filter2
+$qry_filter_rep_name = " '{$user->name}' ";
 $user =& JFactory::getUser();
 
 if($is_user){
@@ -1716,6 +1717,11 @@ function get_cons_kpi_color_sign($n=0,$n_warning=0){
 	 WHERE c.deleted_at IS NULL AND (f.cf_id>5534 AND f.status='Won')"; //f.cf_id>5534 is the next number the new system generate a new quotations.
 
 
+	 if($qry_filter == " rep_id='' AND "){ 
+	 	$qry_filter_1 = "rep_id='".$user->RepID."' AND";
+	 }else{ 
+	 	$qry_filter_1 = $qry_filter; }
+
 	if($is_operation_manager || $is_site_manager || $user_group=="sales_manager" || $is_account_user){
 	 			$sql = "SELECT
 							f.cf_id,
@@ -1735,11 +1741,16 @@ function get_cons_kpi_color_sign($n=0,$n_warning=0){
 							n.content
 						FROM
 							ver_chronoforms_data_followup_vic AS f
-							JOIN ver_chronoforms_data_clientpersonal_vic AS c ON c.clientid = f.quoteid
+							JOIN ver_chronoforms_data_clientpersonal_vic AS c ON c.clientid = f.quoteid							
+							JOIN ver_chronoforms_data_contract_vergola_vic AS cv ON cv.projectid = f.projectid
+							JOIN ver_chronoforms_data_contract_statutory_vic AS cs ON cs.projectid = f.projectid 
+
 							LEFT JOIN ( SELECT * FROM ( SELECT * FROM ver_chronoforms_data_notes_vic GROUP BY cf_id DESC ORDER BY cf_id DESC, date_created DESC ) AS t GROUP BY clientid) AS n ON n.clientid = c.clientid
 						WHERE
+							LOCATE('{$user->name}',CONCAT_WS(' ',cv.drawing_followup_by,cv.client_notified_by,cs.citypermit_followup_bywhom,cs.site_spec_followup_bywhom,cs.hoa_followup_bywhom,cs.coastal_followup_bywhom))> 0 OR (cv.drawing_followup_by) IS NULL AND 
 							c.deleted_at IS NULL 
-							AND ( f.cf_id > 5534 ";
+							AND ( f.cf_id > 5534 
+							";
 
 						if($is_site_manager){$sql .= " AND (f.STATUS = 'Under Consideration' OR f.STATUS = 'Quoted' OR f.STATUS = 'Costed'))"; 
 						}else if($user_group=="sales_manager"){ $sql .= "AND (f.STATUS = 'Won'))"; }
@@ -1761,19 +1772,20 @@ function get_cons_kpi_color_sign($n=0,$n_warning=0){
 					//error_log(print_r($l,true), 3,'C:\\xampp\htdocs\\vergola_contract_system_v4_vic\\my-error.log');
 					if($i==0){
 						$to_do_list_construction .= "<li class='li-header'>";
-						if($user_group=="sales_manager"){
-						$to_do_list_construction .= "<span class='col-date'>Date</span>";}
+						// if($user_group=="sales_manager"){
+						// $to_do_list_construction .= "<span class='col-date'>Date</span>";}
 						
 						$to_do_list_construction .= "<span class='col-client-id'>Project ID</span>
 						<span class='col-name'> Client Name </span> 
 						<span class='col-note'>Last notes</span>
-						<span class='col-name'>Follow-up</span> </li>  ";
+						<span class='col-name'>Follow-up</span> 
+						<span class='col-date'>Date</span> </li>  ";
 					}
 
 					$c = null;
 					if(!empty($l['date_contract_system_created'])){
 
-						$sql = "SELECT cv.drawing_prepare_date, cv.drawing_prepare_date_followup, cv.drawing_approve_date, cv.drawing_approve_date_followup, cv.job_start_date, cv.job_start_date_followup, cs.stat_req_easement_waterboard_approval_date, cs.stat_req_easement_waterboard_followup, cs.stat_req_easement_council_approval_date, cs.stat_req_easement_council_followup, cs.m_o_d_followup
+						/*$sql = "SELECT cv.drawing_prepare_date, cv.drawing_prepare_date_followup, cv.drawing_approve_date, cv.drawing_approve_date_followup, cv.job_start_date, cv.job_start_date_followup, cs.stat_req_easement_waterboard_approval_date, cs.stat_req_easement_waterboard_followup, cs.stat_req_easement_council_approval_date, cs.stat_req_easement_council_followup, cs.m_o_d_followup
 	 FROM  ver_chronoforms_data_contract_list_vic AS cl   JOIN ver_chronoforms_data_contract_vergola_vic AS cv ON cv.projectid=cl.projectid
 	 JOIN ver_chronoforms_data_contract_statutory_vic AS cs ON cs.projectid=cl.projectid
 	 WHERE cl.projectid='{$l['projectid']}' AND ((drawing_prepare_date IS NULL OR DATE(cv.drawing_prepare_date_followup)<=DATE(NOW()) )
@@ -1781,7 +1793,56 @@ function get_cons_kpi_color_sign($n=0,$n_warning=0){
 	 OR (cv.job_start_date IS NULL AND DATE(cv.job_start_date_followup)<=DATE(NOW()) )
 	 OR (cs.stat_req_easement_waterboard_approval_date IS NULL AND DATE(cs.stat_req_easement_waterboard_followup)<=DATE(NOW()) )
 	 OR (cs.stat_req_easement_council_approval_date IS NULL AND DATE(cs.stat_req_easement_council_followup)<=DATE(NOW()) )
-	 OR (cs.m_o_d IS NULL AND DATE(cs.m_o_d_followup)<=DATE(NOW())))";
+	 OR (cs.m_o_d IS NULL AND DATE(cs.m_o_d_followup)<=DATE(NOW())))";*/
+
+	                    $sql = "
+	                    SELECT
+	                    	cv.drawing_prepare_date,
+	                    	cv.drawing_prepare_date_followup,
+	                    	cv.drawing_approve_date,
+	                    	cv.drawing_approve_date_followup,
+	                    	cv.job_start_date,
+	                    	cv.job_start_date_followup,
+	                    	cs.stat_req_easement_waterboard_approval_date,
+	                    	cs.stat_req_easement_waterboard_followup,
+	                    	cs.stat_req_easement_council_approval_date,
+	                    	cs.stat_req_easement_council_followup,
+	                    	cs.m_o_d_followup,
+	                    	cs.coastal_followup_date,
+	                    	cs.hoa_followup_date,
+	                    	cs.citypermit_followup_date,
+	                    	cs.site_spec_followup_date,
+	                    	cv.drawing_followup_by,
+	                    	cv.client_notified_by,
+	                    	cs.citypermit_followup_bywhom,
+	                    	cs.site_spec_followup_bywhom,
+	                    	cs.hoa_followup_bywhom,
+	                    	cs.coastal_followup_bywhom,
+	                    	cs.citypermit_application_approved_date,
+	                    	cs.sitespec_engr_approved_date,
+	                    	cs.site_spec_engineering_approval_date,
+	                    	cs.strata_approved_date,
+	                    	cs.coastal_approval_date,
+	                    	cs.coastal_approved_date 
+	                    FROM
+	                    	ver_chronoforms_data_contract_list_vic AS cl
+	                    	JOIN ver_chronoforms_data_contract_vergola_vic AS cv ON cv.projectid = cl.projectid
+	                    	JOIN ver_chronoforms_data_contract_statutory_vic AS cs ON cs.projectid = cl.projectid 
+	                    WHERE
+	                    	cl.projectid = '{$l[' projectid ']}' 
+	                    	AND (
+	                    	( drawing_prepare_date IS NULL OR DATE( cv.drawing_prepare_date_followup ) <= DATE( NOW( ) ) ) 
+	                    	OR ( cv.drawing_approve_date IS NULL AND DATE( cv.drawing_approve_date_followup ) <= DATE( NOW( ) ) ) 
+	                    	OR ( cv.job_start_date IS NULL AND DATE( cv.job_start_date_followup ) <= DATE( NOW( ) ) ) 
+	                    	OR ( cs.stat_req_easement_waterboard_approval_date IS NULL AND DATE( cs.stat_req_easement_waterboard_followup ) <= DATE( NOW( ) ) ) 
+	                    	OR ( cs.stat_req_easement_council_approval_date IS NULL AND DATE( cs.stat_req_easement_council_followup ) <= DATE( NOW( ) ) ) 
+	                    	OR ( cs.m_o_d IS NULL AND DATE( cs.m_o_d_followup ) <= DATE( NOW( ) ) ) 
+	                    	OR ( cs.citypermit_application_approved_date IS NULL AND DATE( cs.citypermit_followup_date ) <= DATE( NOW( ) ) ) 
+	                    	OR ( cs.site_spec_engineering_approval_date IS NULL AND DATE( cs.site_spec_followup_date ) <= DATE( NOW( ) ) ) 
+	                    	OR ( cs.coastal_approval_date IS NULL AND DATE( cs.coastal_followup_date ) <= DATE( NOW( ) ) ) 
+	                    	OR ( cs.strata_approved_date IS NULL AND DATE( cs.hoa_followup_date ) <= DATE( NOW( ) ) ) 
+	                    	)
+	                    ";
 
 						$fResult1 = mysql_query($sql);
 						$c = mysql_fetch_assoc($fResult1);
@@ -1794,6 +1855,8 @@ function get_cons_kpi_color_sign($n=0,$n_warning=0){
 					$is_overdue = false;
 					$status = "";
 					$date = "";
+					$updated_by = "";
+					$counter = 0;
 					//error_log( " i: ".$i, 3,'C:\\xampp\htdocs\\vergola_contract_system_v4_vic\\my-error.log');
 					//if($l['projectid']=="PRV11282")
 					//	error_log(print_r($l,true), 3,'C:\\xampp\htdocs\\vergola_contract_system_v4_vic\\my-error.log');
@@ -1801,7 +1864,9 @@ function get_cons_kpi_color_sign($n=0,$n_warning=0){
 					// 	$status = "Contract for delivery";
 					// 	$phpdate = strtotime( $l['date_won'] );
 					// 	$date = date( PHP_DFORMAT, $phpdate );
-					$status="";$status1="";$status2="";$status3="";$status4="";$status5="";$status6="";$status7="";$status8="";
+					$status="";$status1="";$status2="";$status3="";$status4="";$status5="";$status6="";$status7="";$status8="";$status9="";$status10="";$status11="";$status12="";
+					$date="";$date1="";$date2="";$date3="";$date4="";$date5="";$date6="";$date7="";$date8="";$date9="";$date10="";$date11="";$date12="";
+					$updated_by="";$updated_by1="";$updated_by2="";$updated_by3="";$updated_by4="";$updated_by5="";$updated_by6="";$updated_by7="";$updated_by8="";$updated_by9="";$updated_by10="";$updated_by11="";$updated_by12="";
 
 
 					if(!empty($l['date_contract_signed']) || !empty($l['date_contract_system_created'])){
@@ -2912,6 +2977,9 @@ var installer_list_prevmon = [
 	$obj = substr($obj, 0, -1);
 	echo $obj;
     //error_log(" installer_list_prevmon: ".$obj, 3,'C:\\xampp\htdocs\\vergola_contract_system_v4_vic\\my-error.log');
+	error_log(" installer_list_prevmon: ".$obj, 3,'C:\\xampp\htdocs\\VergolaVictoria\\my-error.log');
+    // error_log(print_r($c,true), 3,'C:\\xampp\htdocs\\VergolaVictoria\\my-error.log');
+    // error_log(" date_contract_system_created: ".$sql, 3,'C:\\xampp\htdocs\\VergolaVictoria\\my-error.log');  exit();
 
 ?>
 ];
@@ -2923,7 +2991,7 @@ var installer_list_curmon = [
             c.cf_id,
             cp.clientid,
             CONCAT(coalesce(cp.client_firstname,''), ' ', coalesce(cp.client_lastname,''), ' ', coalesce(cp.builder_name,'')) as customer_name,
-            cp.client_suburb,
+            cp.client_suburb, cp.site_suburb, 
             cv.erectors_name,
             cv.erectors_name2,
             c.projectid,
@@ -2963,7 +3031,7 @@ var installer_list_curmon = [
 		}
 
 		$obj .= "{";
-			$obj .= "title:'".addslashes($r["erectors_name"])." ".(strlen($r['erectors_name2'])>0?' & '.addslashes($r["erectors_name2"]):'')." - ".addslashes($r["customer_name"])." (".$r["clientid"]."), ".addslashes($r["client_suburb"])." - $".number_format($r["total_cost"],2,".",",")."',";
+			$obj .= "title:'".addslashes($r["erectors_name"])." ".(strlen($r['erectors_name2'])>0?' & '.addslashes($r["erectors_name2"]):'')." - ".addslashes($r["customer_name"])." (".$r["clientid"]."), ".addslashes($r["site_suburb"])." - $".number_format($r["total_cost"],2,".",",")."',";
 			$obj .= "start:'{$r['install_date']}',";
 			$obj .= "end:'{$r['schedule_completion']} 20:00:00',";
 			// $obj .= "color:color_list[{$j}],";
@@ -2988,7 +3056,7 @@ var installer_list_nextmon = [
             c.cf_id,
             cp.clientid,
             CONCAT(coalesce(cp.client_firstname,''), ' ', coalesce(cp.client_lastname,''), ' ', coalesce(cp.builder_name,'')) as customer_name,
-            cp.client_suburb,
+            cp.client_suburb, cp.site_suburb,
             cv.erectors_name,
             cv.erectors_name2,
             c.projectid,
@@ -3028,7 +3096,7 @@ var installer_list_nextmon = [
 		}
 
 		$obj .= "{";
-			$obj .= "title:'".addslashes($r["erectors_name"])."".(strlen($r['erectors_name2'])>0?' & '.addslashes($r["erectors_name2"]):'')." - ".addslashes($r["customer_name"])." (".$r["clientid"]."), ".addslashes($r["client_suburb"])." - $".number_format($r["total_cost"],2,".",",")." ',";
+			$obj .= "title:'".addslashes($r["erectors_name"])."".(strlen($r['erectors_name2'])>0?' & '.addslashes($r["erectors_name2"]):'')." - ".addslashes($r["customer_name"])." (".$r["clientid"]."), ".addslashes($r["site_suburb"])." - $".number_format($r["total_cost"],2,".",",")." ',";
 			$obj .= "start:'{$r['install_date']}',";
 			$obj .= "end:'{$r['schedule_completion']} 20:00:00',";
 			// $obj .= "color:color_list[{$j}],";
@@ -3137,7 +3205,7 @@ var installer_list_nextmon_ = [
        timeFormat: 'H(:mm)',
        eventClick: function(event) {
 	        if (event.url) {
-	            window.open(event.url);
+	            this.open(event.url);
 	            return false;
 	        }
     	}
@@ -3150,7 +3218,7 @@ var installer_list_nextmon_ = [
 		timeFormat: 'H(:mm)',
         eventClick: function(event) {
 	        if (event.url) {
-	            window.open(event.url);
+	            this.open(event.url);
 	            return false;
 	        }
     	}

@@ -1,8 +1,9 @@
 <?php  
 $db = JFactory::getDbo();
 $section_id =$_REQUEST['sectionid'];
+$is_edit_category = 0;
 
-$result = mysql_query("SELECT * FROM ver_chronoforms_data_section_vic WHERE sectionid  = '$section_id'");
+$result = mysql_query("SELECT * FROM ver_chronoforms_data_marketing_category_vic WHERE active = 1 AND sectionid  = '$section_id'");
 $retrieve = mysql_fetch_array($result);
 if (!$result) 
 		{
@@ -20,7 +21,7 @@ if(isset($_POST['add']))
 
     if($section != $Section)
     {
-        mysql_query("UPDATE ver_chronoforms_data_section_vic SET section ='$section' WHERE sectionid = '$SectionID'")
+        mysql_query("UPDATE ver_chronoforms_data_marketing_category_vic SET section ='$section' WHERE sectionid = '$SectionID'")
                     or die(mysql_error()); 
         echo "Category Updated!";
     }
@@ -34,7 +35,7 @@ if ($cnt > 0 && $category!='') {
 }
 
 
-  $queryn = "INSERT INTO ver_chronoforms_data_section_vic (sectionid, section, category) VALUES " . implode(", ", $insertArr);
+  $queryn = "INSERT INTO ver_chronoforms_data_marketing_category_vic (sectionid, section, category) VALUES " . implode(", ", $insertArr);
  
  mysql_query($queryn) or trigger_error("Insert failed: " . mysql_error());
 
@@ -42,22 +43,28 @@ if ($cnt > 0 && $category!='') {
 
 
 	
-	header('Location:'.JURI::base().'system-management-vic/section-listing-vic');			
+	header('Location:'.JURI::base().'system-management-vic/marketing-category-listing-vic');			
 }
 
 if(isset($_POST['delete']))
 {	
     $category_id = $_POST['category_id'];
-	mysql_query("UPDATE ver_chronoforms_data_section_vic SET status = 'deleted' WHERE cf_id = '$category_id'")
+	mysql_query("UPDATE ver_chronoforms_data_marketing_category_vic SET active = 0 WHERE cf_id = '$category_id'")
 				or die(mysql_error()); 
-	echo "Deleted";
-	
-			
+	echo "Deleted";			
+}
+
+if(isset($_POST['delete_category']))
+{   
+    // $cat_id = $_POST['category_id'];
+    mysql_query("UPDATE ver_chronoforms_data_marketing_category_vic SET active = 0 WHERE cf_id = '$id'")
+                or die(mysql_error()); 
+    header('Location:'.JURI::base().'system-management-vic/marketing-category-listing-vic');    
 }
 
 if(isset($_POST['cancel']))
 {	
-	header('Location:'.JURI::base().'system-management-vic/section-listing-vic');			
+	header('Location:'.JURI::base().'system-management-vic/marketing-category-listing-vic');			
 }
 
 if(isset($_POST['update']))
@@ -65,7 +72,15 @@ if(isset($_POST['update']))
 	$categoryid = $_POST['category_id'];
 	$category_retrieve = $_POST['category_update'];
 
-	mysql_query("UPDATE ver_chronoforms_data_section_vic SET category ='$category_retrieve' WHERE cf_id = '$categoryid'")
+    // $section = $_POST['section'];
+    // if($section != $Section)
+    // {
+    //     mysql_query("UPDATE ver_chronoforms_data_marketing_category_vic SET section ='$section' WHERE sectionid = '$SectionID'")
+    //                 or die(mysql_error()); 
+    //     echo "Category Updated!";
+    // }
+
+	mysql_query("UPDATE ver_chronoforms_data_marketing_category_vic SET category ='$category_retrieve' WHERE cf_id = '$categoryid'")
 				or die(mysql_error()); 
 	echo "Saved!";
 		
@@ -156,9 +171,16 @@ if(isset($_POST['update']))
         }
 </SCRIPT>
 
+<input type='hidden' name='year_' id='year_' value='<?php echo $year_; ?>' />
 <form method="post" >
+<input type='hidden' name='section_id' id='section_id' value='<?php echo $section_id; ?>' />
+<input type='hidden' name='SectionID' id='SectionID' value='<?php echo $SectionID; ?>' />
+<input type='hidden' name='Section' id='Section' value='<?php echo $Section; ?>' />
+<input type='hidden' name='id' id='id' value='<?php echo $id; ?>' />
+<input type='hidden' name='is_edit_category' id='is_edit_category' value='<?php echo $is_edit_category; ?>' />
+
 <div class="left-section">
-<h2>Section</h2>
+<h2>Category</h2>
 <table class="update-table">
    
 	<tr>
@@ -167,16 +189,18 @@ if(isset($_POST['update']))
 		
 	<tr>
 		<td class="row2"><div class="btnclass">
-<input type="submit" name="add" value="Save" class="update-btn" /> <input type="button" name="cancel" value="Cancel" class="update-btn" onclick=location.href='<?php echo JURI::base(); ?>system-management-vic/section-listing-vic' />
+        <input type="submit" name="add" value="Save" class="update-btn" /> 
+        <input type="button" name="cancel" value="Cancel" class="update-btn" onclick=location.href='<?php echo JURI::base(); ?>system-management-vic/marketing-category-listing-vic' />
+        <input type="submit" style="width: 41%;" class="del-category" name="delete_category" value="Delete Marketing Category"  />
 </div></td>
 	</tr>
 </table>
 </div>
 
 <div class="right-section">
-<h2>Category</h2>
-<INPUT type="button" value="Add Category" onclick="addRow('tbl-draw')" />
-<INPUT type="submit" class="del-section" name="delete" value="Delete Category" onclick="deleteRow('tbl-draw');deleteRow2('tbl-retrieve')" />
+<h2>Marketing Source</h2>
+<INPUT type="button" value="Add Marketing Source" onclick="addRow('tbl-draw')" />
+<INPUT type="submit" class="del-section" name="delete" value="Delete Marketing Source" onclick="deleteRow('tbl-draw');deleteRow2('tbl-retrieve')" />
 
 <input type="hidden" id="category_id" name="category_id" value=""/>
 <input type="hidden" id="category_update" name="category_update" value=""/>
@@ -185,7 +209,7 @@ if(isset($_POST['update']))
   
        <?php 
 		   //Getting Categories
-	$resultcat = mysql_query("SELECT category, cf_id FROM ver_chronoforms_data_section_vic WHERE sectionid = '$SectionID' AND status !='deleted' ORDER BY category ASC");
+	$resultcat = mysql_query("SELECT category, cf_id FROM ver_chronoforms_data_marketing_category_vic WHERE active=1 AND sectionid = '$SectionID' ORDER BY category ASC");
 	$j=0; $k=0;
 	while ($recordcat = mysql_fetch_row($resultcat)) {
 		

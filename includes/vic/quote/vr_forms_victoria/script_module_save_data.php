@@ -15,7 +15,7 @@ $sql = str_replace(
 $results = executeDbQuery($sql);
 if ($results['error'] == 'null') {
     $r1 = mysql_fetch_array($results['data']);
-    $next_project_id = 'PRV' . $r1['Auto_increment'];
+    $next_project_id = 'PRW' . $r1['Auto_increment'];
 } else {
     $app_response['error'][] = $results['error'];
     $app_response['message'][] = $results['message'];

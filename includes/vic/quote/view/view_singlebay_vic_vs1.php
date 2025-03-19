@@ -1,6 +1,6 @@
 <?php  
 $is_tender_quote=0;       
-if(substr($QuoteID,0,3)=="TRV"){
+if(substr($QuoteID,0,3)=="TRW"){
 	$is_tender_quote=1; 
 
 	$sql = "SELECT * FROM ver_chronoforms_data_builderpersonal_vic WHERE tenderid  = '$QuoteID' LIMIT 1";
@@ -65,7 +65,7 @@ if((isset($_POST['update']) || isset($_POST['save_duplicate']) || isset($_POST['
 		$qShowStatusResult = mysql_query($qShowStatus) or die ( "Query failed: " . mysql_error() . "<br/>" . $qShowStatus );
 		$row = mysql_fetch_assoc($qShowStatusResult);
 		$next_increment = $row['Auto_increment'];
-		$projectid = 'PRV'.$next_increment; 
+		$projectid = 'PRW'.$next_increment; 
 
 		$i1 = 1;
 

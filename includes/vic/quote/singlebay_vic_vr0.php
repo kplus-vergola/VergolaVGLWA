@@ -5,14 +5,14 @@ $next_increment = 0;
 // $qShowStatusResult = mysql_query($qShowStatus) or die ( "Query failed: " . mysql_error() . "<br/>" . $qShowStatus );
 // $row = mysql_fetch_assoc($qShowStatusResult);
 // $next_increment = $row['Auto_increment'];
-// $getprojectid = 'PRV'.$next_increment;
+// $getprojectid = 'PRW'.$next_increment;
 // error_log("1: ".print_r($row,true), 3,'C:\\xampp\htdocs\\vergola_contract_system_v4_us\\my-error.log');
 
 $qShowStatus = "SELECT cf_id+1 AS Auto_increment FROM ver_chronoforms_data_followup_vic ORDER BY cf_id DESC LIMIT 1";
 $qShowStatusResult = mysql_query($qShowStatus) or die ( "Query failed: " . mysql_error() . "<br/>" . $qShowStatus );
 $row = mysql_fetch_assoc($qShowStatusResult);
 $next_increment = $row['Auto_increment'];
-$getprojectid = 'PRV'.$next_increment;
+$getprojectid = 'PRW'.$next_increment;
 //error_log("2: ".print_r($row,true), 3,'C:\\xampp\htdocs\\vergola_contract_system_v4_us\\my-error.log');
  
 $retrieveb = null;

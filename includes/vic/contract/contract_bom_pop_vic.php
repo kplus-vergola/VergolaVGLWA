@@ -1,6 +1,6 @@
 <?php
 if (strlen($_REQUEST['projectid']) > 0 && 
-    substr($_REQUEST['projectid'], 0, 3) == 'PRV') {
+    substr($_REQUEST['projectid'], 0, 3) == 'PRW') {
     $page_name = 'contract_bom';
     if (isset($_REQUEST['page_name'])) {
         $page_name = $_REQUEST['page_name'];

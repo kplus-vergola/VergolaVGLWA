@@ -29,7 +29,7 @@ $sales_rep = $projectInfo['sales_rep'];
 //error_log("Sales Rep ".print_r($contract,true), 3,'C:\\xampp\htdocs\\vergola_contract_system_v4_sa\\my-error.log'); 
  
 
-if($QuoteIDAlpha == "CRV") {
+if($QuoteIDAlpha == "CRW") {
 $result = mysql_query("SELECT * FROM ver_chronoforms_data_clientpersonal_vic WHERE clientid  = '$QuoteID'");
 $retrieve = mysql_fetch_assoc($result);
 if (!$result) 

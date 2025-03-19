@@ -53,7 +53,7 @@ if (!$result)
 	
 	$EmployeeID = $retrieve['employeeid'];
 	$NotesID = $retrieve['pid'];
-	$ClientID = 'BRV'.$NotesID;
+	$ClientID = 'BRW'.$NotesID;
 	$BuilderID = $retrieve['builderid'];
     $QuoteID = $BuilderID;
 	

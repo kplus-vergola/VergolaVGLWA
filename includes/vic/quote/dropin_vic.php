@@ -4,7 +4,7 @@ $qShowStatus = "SHOW TABLE STATUS LIKE 'ver_chronoforms_data_followup_vic'";
 $qShowStatusResult = mysql_query($qShowStatus) or die ( "Query failed: " . mysql_error() . "<br/>" . $qShowStatus );
 $row = mysql_fetch_assoc($qShowStatusResult);
 $next_increment = $row['Auto_increment'];
-$getprojectid = 'PRV'.$next_increment;
+$getprojectid = 'PRW'.$next_increment;
 
 $ReplaceCHAR = $QuoteID;
 
@@ -12,8 +12,8 @@ $resultb = mysql_query("SELECT builderid, repname FROM ver_chronoforms_data_buil
 $retrieveb = mysql_fetch_array($resultb);
 if (!$resultb) {die("Error: Data not found..");}
 $BuilderID = $retrieveb['builderid'];
-if($BuilderID == $QuoteID) {$PID = str_replace('BRV', '', $ReplaceCHAR); } 
-else {$PID = str_replace('CRV', '', $ReplaceCHAR); }
+if($BuilderID == $QuoteID) {$PID = str_replace('BRW', '', $ReplaceCHAR); } 
+else {$PID = str_replace('CRW', '', $ReplaceCHAR); }
 
 $salesrepb = $retrieveb['repname'];
 

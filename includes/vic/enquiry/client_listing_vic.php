@@ -143,7 +143,7 @@ if(isset($_REQUEST['submit']) || isset($_REQUEST['search'])){
 
 	if(isset($_REQUEST['todate'])){ $todate = $_REQUEST['todate']; }
 
-	if(isset($_REQUEST['rep_id'])){ $rep_id = $_REQUEST['rep_id']; }
+	if(isset($_REQUEST['replist'])){ $rep_id = $_REQUEST['replist']; }
 
 	if(isset($_REQUEST['advance_search'])){ $advance_search = $_REQUEST['advance_search']; }
 
@@ -322,7 +322,7 @@ echo "</select></label>";
 
 
 echo " 
-	 <label class='input'><span>CRV</span><input type='input' name='search_ID' value='".($search_ID!=''?$search_ID:"")."' style='border:1px solid #7C7D7F;' ></label>"; 
+	 <label class='input'><span>CRW</span><input type='input' name='search_ID' value='".($search_ID!=''?$search_ID:"")."' style='border:1px solid #7C7D7F;' ></label>"; 
 	  
 
         //onclick='$(\"#is_search_ID\").val(\"1\"); $(\"#btn_advance_search\").click();'

@@ -2507,7 +2507,7 @@ if(isset($_POST['close']))
     $template_username = $current_user_info->username;
     $template_password = $current_user_info->password;
     $template_status = 'Published';
-    $client_id_prefix = 'CRV';
+    $client_id_prefix = 'CRW';
 
     function getTemplateListInHtml($sql_template, $template_module, $template_entity_name, $template_folder_name, $template_content_category, $template_status, $template_download_option, $adhoc_entity_name) {
         $html_text = '';
@@ -3544,7 +3544,7 @@ if (!$resultimg) {
 <?php if($page_name=="maintenancefolder"){ ?>
     
 
-<?php }else if($is_system_admin || $is_operation_manager || $is_account_user){ ?>
+<?php }else if($is_system_admin || $is_operation_manager || $is_account_user || $is_sales_manager){ ?>
 <div id="tabs_wrapper" class="button-tab">
 
         <?php //process user_access_profiles

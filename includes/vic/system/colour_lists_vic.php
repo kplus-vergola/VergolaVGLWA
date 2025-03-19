@@ -43,11 +43,11 @@ $start = ($page-1) * NUMBER_PER_PAGE;
 * variables passed in the URL because someone clicked on a page number
 **/
 $search = $_POST['search_string'];
-$sql = "SELECT * FROM ver_chronoforms_data_colour_vic WHERE 1=1";
+$sql = "SELECT * FROM ver_chronoforms_data_colour_vic WHERE 1=1 AND status != 'deleted'";
 $result = mysql_query($sql) or die(mysql_error());
 
 if ($search)
-	$sql .= " AND colour LIKE '%"  . $search .  "%'";
+	$sql .= " AND (colour LIKE '%"  . $search .  "%')";
 	
 //this return the total number of records returned by our query
 $total_records = mysql_num_rows(mysql_query($sql));

@@ -540,16 +540,16 @@ $custom_configs_user = array(
                 'tab purchase order' => array('show' => true), 
                 'tab po summary' => array('show' => true), 
                 'tab check list' => array('show' => true), 
-                'tab vergola standard' => array('edit' => false), 
-                'tab statutory approval' => array('edit' => false), 
-                'tab contract cancellation' => array('edit' => false),
+                'tab vergola standard' => array('edit' => true), 
+                'tab statutory approval' => array('edit' => true), 
+                'tab contract cancellation' => array('edit' => true),
                 'tab sales' => array('save' => false, 'delete' => false), 
                 'tab correspondence' => array('save' => false, 'delete' => false), 
                 'tab statutory' => array('save' => false, 'delete' => false), 
                 'tab photos' => array('save' => false, 'delete' => false), 
                 'tab drawings' => array('save' => false, 'delete' => false), 
                 'tab general' => array('save' => false, 'delete' => false), 
-                'record action' => array('update' => true, 'cancel contract' => false)
+                'record action' => array('update' => true, 'cancel contract' => true)
             ), 
             'add-quote-vic > contract_bom' => array(
                 'button bill of materials' => array('show' => true), 

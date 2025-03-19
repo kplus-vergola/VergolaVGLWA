@@ -911,6 +911,7 @@
             var template_vr_form_image = '<img class="bom_form_field_image_1" id="[FIELD_NAME]" name="[FIELD_NAME]" src="[IMAGE_URL]" onmouseover="" onmouseout="" onclick="" />';
 
             var template_vr_form_item_remove_button = '<input type="button" class="vr_form_field_button_1" id="button_remove_vr_form_item_data_entry_[INDEX_NUMBER]" name="button_remove_vr_form_item_data_entry_[INDEX_NUMBER]" value="Remove" onclick="removeVrFormItemAdhocDataEntry([INDEX_NUMBER])" />';
+            var template_vr_form_item_remove_button_disabled = '<input type="button" disabled class="vr_form_field_button_1" id="button_remove_vr_form_item_data_entry_[INDEX_NUMBER]" name="button_remove_vr_form_item_data_entry_[INDEX_NUMBER]" value="Remove" onclick="removeVrFormItemAdhocDataEntry([INDEX_NUMBER])" />';
 
             var vr_item_data_entry_input_type_area = {};
             vr_item_data_entry_input_type_area['item_display_name'] = '';
@@ -1422,11 +1423,30 @@
                                 if ((vr_form_items_data_entry[c12]['vr_item_adhoc'] == 'yes' || 
                                     vr_form_system_info['access_mode'] == 'contract_bom_edit') && 
                                     vr_form_system_info['access_mode'] != 'quote_view') {
-                                    temp_text = replaceSubstringInText(
+                                    temp_array = getDataRowsFromDataList(
+                                        vr_total_process_order_items_by_section_list, 
+                                        ['display_name'], 
+                                        [vr_sections_list[c11]['display_name']]
+                                    );
+                                    /* --- validate the process items before dispaying the remove buttons --- */
+                                    if (temp_array[0]['total_process_order_items'] > 0) {
+                                       temp_text = replaceSubstringInText(
+                                           ['[INDEX_NUMBER]'], 
+                                           [c12], 
+                                           template_vr_form_item_remove_button_disabled
+                                       );
+                                    }else{
+                                      temp_text = replaceSubstringInText(
+                                            ['[INDEX_NUMBER]'], 
+                                            [c12], 
+                                            template_vr_form_item_remove_button
+                                        );
+                                    }
+                                    /*temp_text = replaceSubstringInText(
                                         ['[INDEX_NUMBER]'], 
                                         [c12], 
                                         template_vr_form_item_remove_button
-                                    );
+                                    );*/
                                 } else {
                                     temp_text = '&nbsp';
                                 }

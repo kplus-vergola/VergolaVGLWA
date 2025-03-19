@@ -48,7 +48,7 @@ header('Location:'.JURI::base().'system-management-vic/image-listing-vic');
 if(isset($_POST['delete']))
 {	
 
-	mysql_query("DELETE from ver_chronoforms_data_image_vic WHERE cf_id = '$id'")
+	mysql_query("UPDATE ver_chronoforms_data_image_vic SET status = 'deleted' WHERE cf_id = '$id'")
 				or die(mysql_error()); 
 	echo "Deleted";
 	

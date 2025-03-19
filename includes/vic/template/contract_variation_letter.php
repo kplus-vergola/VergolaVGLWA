@@ -25,7 +25,7 @@ $projectInfo = mysql_fetch_array($resulProject);
 
 
 
-if($QuoteIDAlpha == "CRV") {
+if($QuoteIDAlpha == "CRW") {
 $result = mysql_query("SELECT * FROM ver_chronoforms_data_clientpersonal_vic WHERE clientid  = '$QuoteID'");
 $retrieve = mysql_fetch_array($result);
 if (!$result) 
@@ -206,7 +206,7 @@ p {margin: 0;}
 	$address = "";
 	$variationNo = "";
 
-	if($QuoteIDAlpha == "CRV") {
+	if($QuoteIDAlpha == "CRW") {
 		$owner = $ClientTitle.' '.$ClientLastName;
 		$address = $SiteAddress1 .' '. $SiteAddress2;
 		$address2 = $SiteSuburb .' '. $SiteState  .' '.$SitePostcode;

@@ -44,11 +44,11 @@ $start = ($page-1) * NUMBER_PER_PAGE;
 * variables passed in the URL because someone clicked on a page number
 **/
 $search = $_POST['search_string'];
-$sql = "SELECT * FROM ver_chronoforms_data_supplier_vic WHERE 1=1";
+$sql = "SELECT * FROM ver_chronoforms_data_supplier_vic WHERE 1=1 AND status != 'deleted'";
 $result = mysql_query($sql) or die(mysql_error());
 
 if ($search)
-	$sql .= " AND company_name LIKE '%"  . $search .  "%'" . " OR address1 LIKE '%"  . $search .  "%'" . " OR address2 LIKE '%"  . $search .  "%'" . " OR suburb LIKE '%"  . $search .  "%'";
+	$sql .= " AND (company_name LIKE '%"  . $search .  "%'" . " OR address1 LIKE '%"  . $search .  "%'" . " OR address2 LIKE '%"  . $search .  "%'" . " OR suburb LIKE '%"  . $search .  "%')";
 
 	
 //this return the total number of records returned by our query
