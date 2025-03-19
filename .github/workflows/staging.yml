@@ -1,0 +1,22 @@
+name: Deploy To Staging
+
+on:
+  push:
+    branches:
+      - staging
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, vergola-vglwa-staging]
+
+    steps:
+      - name: Configure Git
+        run: |
+          git config --global user.email "vergola.github@knowdgeplus.net.au"
+          git config --global user.name "kplus-vergola"
+    
+      - name: Deploy Application
+        run: |
+          cd C:/xampp/htdocs/staging/VergolaVGLWA
+
+          git pull origin staging
