@@ -1,8 +1,4 @@
-<?php
-
-//include $this->baseurl . "includes/conn.php"; //make sure you update this file with your database info
-
-//our pagination function is now in this file
+<?php  //our pagination function is now in this file
 function pagination($current_page_number, $total_records_found, $query_string = null)
 {
 	$page = 1;
@@ -12,10 +8,11 @@ function pagination($current_page_number, $total_records_found, $query_string = 
 	for ($total_pages = ($total_records_found/NUMBER_PER_PAGE); $total_pages > 0; $total_pages--)
 	{
 		if ($page != $current_page_number)
-			echo "<a href=\"" . "system-management-vic/suburb-listing-vic" . "?page=$page" . (($query_string) ? "&$query_string" : "") . "\">";
+			echo "<a href=\"" . "system-management-vic/marketing-category-listing-vic" . "?page=$page" . (($query_string) ? "&$query_string" : "") . "\">";
 
-		if ($page == $current_page_number) {echo "<span class=\"current\">$page</span>";} else {echo "$page";}
+		 if ($page == $current_page_number) {echo "<span class=\"current\">$page</span>";} else {echo "$page";}
 
+		
 		if ($page != $current_page_number)
 			echo "</a>";
 
@@ -34,7 +31,7 @@ echo "<div class='search-listing'>
 <form action='" . JRoute::_($url) . "' method='post'>
 	Search: <input type='text' name='search_string' /> <input type='submit' name='submit' value='Search' class='search-btn' />
 </form>
-<input type='button' class='add-btn' onclick=location.href='" . JURI::base() . "system-management-vic/suburb-listing-vic/suburbs-vic' value='Add New'>
+<input type='button' class='add-btn' onclick=location.href='" . JURI::base() . "system-management-vic/marketing-category-listing-vic/marketing-category-vic' value='Add New'>
 </div>";
 
 //load the current paginated page number
@@ -46,12 +43,11 @@ $start = ($page-1) * NUMBER_PER_PAGE;
 * variables passed in the URL because someone clicked on a page number
 **/
 $search = $_POST['search_string'];
-$sql = "SELECT * FROM ver_chronoforms_data_suburbs_vic WHERE 1=1 AND status != 'deleted'";
+$sql = "SELECT distinct section, sectionid FROM ver_chronoforms_data_marketing_category_vic WHERE 1=1 AND active = 1";
 $result = mysql_query($sql) or die(mysql_error());
 
 if ($search)
-	$sql .= " AND (suburb_state LIKE '%"  . $search .  "%'" . " OR suburb_postcode LIKE '%"  . $search .  "%'" . " OR suburb_district LIKE '%"  . $search .  "%'" . " OR suburb LIKE '%"  . $search .  "%')";
-
+	$sql .= " AND (section LIKE '%"  . $search .  "%'" . " OR category LIKE '%"  . $search .  "%')";
 	
 //this return the total number of records returned by our query
 $total_records = mysql_num_rows(mysql_query($sql));
@@ -67,16 +63,27 @@ $sql .= " LIMIT $start, " . NUMBER_PER_PAGE;
 **/
 echo "<center><h1 class='search-records'>" . number_format($total_records) . " Records Found</h1></center>";
 echo "<div class='pagination-layer'>";
-pagination($page, $total_records, "suburb_state=$suburb_state&suburb_postcode=$suburb_postcode&suburb_district=$suburb_district&suburb=$suburb");
+pagination($page, $total_records, "section=$section&category=$category");
 echo "</div>";
 
-$loop = mysql_query($sql)
-	or die ('cannot run the query because: ' . mysql_error());
-	echo "<table class='listing-table table-bordered'><thead><tr><th>State</th> <th>Postcode</th> <th>District</th> <th>Suburb</th></tr></thead><tbody>";
-while ($record = mysql_fetch_assoc($loop))
-    echo "<tr class='pointer' onclick=location.href='" . $this->baseurl . "suburb-listing-vic/suburbs-updatelist-vic?cf_id={$record['cf_id']}' ><td>{$record['suburb_state']}</td> " . "<td>{$record['suburb_postcode']}</td>" . "<td>{$record['suburb_district']}</td>" . "<td>{$record['suburb']}</td></tr>";
+$loop = mysql_query($sql) or die ('cannot run the query because: ' . mysql_error());
+	echo "<table class='listing-table table-bordered'><thead><tr><th>Category</th> <th>Marketing Source</th> </tr></thead><tbody>";
+while ($record = mysql_fetch_assoc($loop)) {
+$SectionID = $record['sectionid'];
+
+    echo "<tr class='pointer' onclick=location.href='" . $this->baseurl . "marketing-category-listing-vic/marketing-category-updatelist-vic?sectionid={$record['sectionid']}' ><td>{$record['section']}</td> <td>";
+	
+	//Getting Categories
+	$resultcat = mysql_query("SELECT category FROM ver_chronoforms_data_marketing_category_vic WHERE active = 1 AND sectionid = '$SectionID' ORDER BY category ASC");
+	while ($recordcat = mysql_fetch_row($resultcat)) {
+		echo $recordcat[0]."<br/>";
+	}
+	
+echo "</td></tr>";
+}
+	
     echo "</tbody></table>"; 
     
 echo "<div class='pagination-layer'>";
-pagination($page, $total_records, "suburb_state=$suburb_state&suburb_postcode=$suburb_postcode&suburb_district=$suburb_district&suburb=$suburb");
+pagination($page, $total_records, "section=$section&category=$category");
 echo "</div>";

@@ -84,7 +84,7 @@ if(isset($_POST['save']))
 if(isset($_POST['delete']))
 {	
 
-	mysql_query("DELETE from ver_chronoforms_data_supplier_vic WHERE cf_id = '$id'")
+	mysql_query("UPDATE ver_chronoforms_data_supplier_vic SET status = 'deleted' WHERE cf_id = '$id'")
 				or die(mysql_error()); 
 	echo "Deleted";
 	

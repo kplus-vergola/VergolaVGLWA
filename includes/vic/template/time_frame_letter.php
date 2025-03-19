@@ -19,7 +19,7 @@ if(isset($_POST['add']))
 $clientContactName = "";
 
 
-if($QuoteIDAlpha == "CRV") {
+if($QuoteIDAlpha == "CRW") {
 $result = mysql_query("SELECT * FROM ver_chronoforms_data_clientpersonal_vic WHERE clientid  = '$QuoteID'");
 $retrieve = mysql_fetch_array($result);
 if (!$result) 
@@ -199,7 +199,7 @@ p {margin: 0;}
 		<p><?php print(Date("d M Y")); ?></p><br/> 
 
 		<?php
-			if($QuoteIDAlpha == "CRV") {
+			if($QuoteIDAlpha == "CRW") {
 				$clientContactName = $ClientTitle.' '.$ClientLastName;
 		?>
 			<?php echo $ClientFirstName .' '. $ClientLastName; ?>  <br/> 

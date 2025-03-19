@@ -34,7 +34,7 @@ $next_increment = $row['Auto_increment'];
 
 $client_code = "";
 if(HOST_SERVER=="Victoria"){
-  $client_code = "CRV";
+  $client_code = "CRW";
 }else if(HOST_SERVER=="SA"){
   $client_code = "CR";
 }else if(HOST_SERVER=="LA"){
@@ -138,7 +138,7 @@ $qShowStatus = "SHOW TABLE STATUS LIKE 'ver_chronoforms_data_clientpersonal_vic'
 $qShowStatusResult = mysql_query($qShowStatus) or die ( "Query failed: " . mysql_error() . "<br/>" . $qShowStatus );
 $row = mysql_fetch_assoc($qShowStatusResult);
 $next_increment = $row['Auto_increment'];
-$getclientid = 'BRV'.$next_increment;
+$getclientid = 'BRW'.$next_increment;
 
 $id = $_REQUEST['tenderid'];
 $sql = "SELECT *, DATE_FORMAT(datelodged,'".SQL_DFORMAT."') fdatelodged, DATE_FORMAT(appointmentdate,'".SQL_DFORMAT." @ %h:%i %p') fappointmentdate FROM ver_chronoforms_data_clientpersonal_vic WHERE tenderid  = '$id'";
@@ -349,7 +349,7 @@ $BuildID6 = $row6[1]; }
 	
 	$EmployeeID = $retrieve['employeeid'];
 	$NotesID = $retrieve['pid'];
-	$ClientID = 'BRV'.$NotesID;
+	$ClientID = 'BRW'.$NotesID;
  
 //error_log(" HERE #0: ", 3,'C:\\xampp\htdocs\\vergola_contract_system_v4_sa\\my-error.log');
 //error_log(" HERE: A1 ".print_r($_POST,true), 3,'C:\\xampp\htdocs\\vergola_contract_system_v4_sa\\my-error.log'); 
@@ -526,7 +526,7 @@ if(isset($_POST['save']) || isset($_POST['sendmail']))
 		$qShowStatusResult = mysql_query($qShowStatus) or die ( "Query failed: " . mysql_error() . "<br/>" . $qShowStatus );
 		$row = mysql_fetch_assoc($qShowStatusResult);
 		$next_increment = $row['Auto_increment'];
-		$getclientid = 'BRV'.$next_increment;
+		$getclientid = 'BRW'.$next_increment;
 
    		mysql_query("INSERT INTO ver_chronoforms_data_clientpersonal_vic 
                  (clientid, builder_name, builder_contact, client_address1, client_address2,
@@ -576,7 +576,7 @@ if(isset($_POST['save']) || isset($_POST['sendmail']))
 		$qShowStatusResult = mysql_query($qShowStatus) or die ( "Query failed: " . mysql_error() . "<br/>" . $qShowStatus );
 		$row = mysql_fetch_assoc($qShowStatusResult);
 		$next_increment = $row['Auto_increment'];
-		$getclientid = 'BRV'.$next_increment;
+		$getclientid = 'BRW'.$next_increment;
 
 		$sql = "INSERT INTO ver_chronoforms_data_clientpersonal_vic 
                  (clientid, builder_name, builder_contact, client_address1, client_address2,
@@ -630,7 +630,7 @@ if(isset($_POST['save']) || isset($_POST['sendmail']))
 		$qShowStatusResult = mysql_query($qShowStatus) or die ( "Query failed: " . mysql_error() . "<br/>" . $qShowStatus );
 		$row = mysql_fetch_assoc($qShowStatusResult);
 		$next_increment = $row['Auto_increment'];
-		$getclientid = 'BRV'.$next_increment;
+		$getclientid = 'BRW'.$next_increment;
 
    	$sql = "INSERT INTO ver_chronoforms_data_clientpersonal_vic 
                  (clientid,  builder_name, builder_contact, client_address1, client_address2,
@@ -684,7 +684,7 @@ if(isset($_POST['save']) || isset($_POST['sendmail']))
 		$qShowStatusResult = mysql_query($qShowStatus) or die ( "Query failed: " . mysql_error() . "<br/>" . $qShowStatus );
 		$row = mysql_fetch_assoc($qShowStatusResult);
 		$next_increment = $row['Auto_increment'];
-		$getclientid = 'BRV'.$next_increment;
+		$getclientid = 'BRW'.$next_increment;
 
    		mysql_query("INSERT INTO ver_chronoforms_data_clientpersonal_vic 
                  (clientid, builder_name, builder_contact, client_address1, client_address2,
@@ -733,7 +733,7 @@ if(isset($_POST['save']) || isset($_POST['sendmail']))
 		$qShowStatusResult = mysql_query($qShowStatus) or die ( "Query failed: " . mysql_error() . "<br/>" . $qShowStatus );
 		$row = mysql_fetch_assoc($qShowStatusResult);
 		$next_increment = $row['Auto_increment'];
-		$getclientid = 'BRV'.$next_increment;
+		$getclientid = 'BRW'.$next_increment;
 
    		mysql_query("INSERT INTO ver_chronoforms_data_clientpersonal_vic 
                  (clientid,  builder_name, builder_contact, client_address1, client_address2,

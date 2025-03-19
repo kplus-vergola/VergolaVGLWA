@@ -29,7 +29,7 @@ if(isset($_POST['save']))
 if(isset($_POST['delete']))
 {	
 
-	mysql_query("DELETE from ver_chronoforms_data_travel_vic WHERE cf_id = '$id'")
+	mysql_query("UPDATE ver_chronoforms_data_travel_vic SET status = 'deleted' WHERE cf_id = '$id'")
 				or die(mysql_error()); 
 	echo "Deleted";
 	

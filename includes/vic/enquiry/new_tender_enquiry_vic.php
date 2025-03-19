@@ -11,7 +11,7 @@ $next_increment = $row['Auto_increment'];
 
 $client_code = "";
 if(HOST_SERVER=="Victoria"){
-  $client_code = "CRV";
+  $client_code = "CRW";
 }else if(HOST_SERVER=="SA"){
   $client_code = "CR";
 }else if(HOST_SERVER=="LA"){
@@ -115,8 +115,8 @@ $qShowStatus = "SHOW TABLE STATUS LIKE 'ver_chronoforms_data_builderpersonal_vic
 $qShowStatusResult = mysql_query($qShowStatus) or die ( "Query failed: " . mysql_error() . "<br/>" . $qShowStatus );
 $row = mysql_fetch_assoc($qShowStatusResult);
 $next_increment = $row['Auto_increment'];
-$getclientid = 'BRV'.$next_increment;
-$gettenderid = 'TRV'.$next_increment;
+$getclientid = 'BRW'.$next_increment;
+$gettenderid = 'TRW'.$next_increment;
 
 
 if(isset($_POST['save']) || isset($_POST['sendmail']))
@@ -350,7 +350,7 @@ if(isset($_POST['save']) || isset($_POST['sendmail']))
 
 
   if(strlen($_POST['builder_name2'])){
-      $getclientid = 'BRV'.$next_increment+1;
+      $getclientid = 'BRW'.$next_increment+1;
 
       $BuildName1 = $_POST['builder_name2'];
       $BuildContact1 = $_POST['builder_contact2'];          
@@ -448,7 +448,7 @@ if(isset($_POST['save']) || isset($_POST['sendmail']))
   }
 
   if(strlen($_POST['builder_name3'])){
-      $getclientid = 'BRV'.$next_increment+1;
+      $getclientid = 'BRW'.$next_increment+1;
       $BuildName1 = $_POST['builder_name3'];
       $BuildContact1 = $_POST['builder_contact3'];          
       $BuildAddress11 = $_POST['baddress13'];
@@ -545,7 +545,7 @@ if(isset($_POST['save']) || isset($_POST['sendmail']))
   }
 
   if(strlen($_POST['builder_name4'])){
-      $getclientid = 'BRV'.$next_increment+1;
+      $getclientid = 'BRW'.$next_increment+1;
       $BuildName1 = $_POST['builder_name4'];
       $BuildContact1 = $_POST['builder_contact4'];          
       $BuildAddress11 = $_POST['baddress14'];
@@ -641,7 +641,7 @@ if(isset($_POST['save']) || isset($_POST['sendmail']))
   }
 
   if(strlen($_POST['builder_name5'])){
-      $getclientid = 'BRV'.$next_increment+1;
+      $getclientid = 'BRW'.$next_increment+1;
       $BuildName1 = $_POST['builder_name5'];
       $BuildContact1 = $_POST['builder_contact5'];          
       $BuildAddress11 = $_POST['baddress15'];
@@ -738,7 +738,7 @@ if(isset($_POST['save']) || isset($_POST['sendmail']))
   }
 
   if(strlen($_POST['builder_name6'])){
-      $getclientid = 'BRV'.$next_increment+1;
+      $getclientid = 'BRW'.$next_increment+1;
       $BuildName1 = $_POST['builder_name6'];
       $BuildContact1 = $_POST['builder_contact6'];          
       $BuildAddress11 = $_POST['baddress16'];

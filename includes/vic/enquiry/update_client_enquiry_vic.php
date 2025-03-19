@@ -18,11 +18,11 @@ $qShowStatus = "SHOW TABLE STATUS LIKE 'ver_chronoforms_data_clientpersonal_vic'
 $qShowStatusResult = mysql_query($qShowStatus) or die ( "Query failed: " . mysql_error() . "<br/>" . $qShowStatus );
 $row = mysql_fetch_assoc($qShowStatusResult);
 $next_increment = $row['Auto_increment'];
-$getclientid = 'CRV'.$next_increment;
+$getclientid = 'CRW'.$next_increment;
 
 if(isset($_POST['save']) || isset($_POST['sendmail']))
 {	
-    $ClientID = 'CRV'.$row['Auto_increment'];
+    $ClientID = 'CRW'.$row['Auto_increment'];
     $ClientSuburbID = $_POST['csuburbid'] ;
 	$ClientTitle = $_POST['ctitle'];
 	$ClientFirstName = $_POST['firstname'];

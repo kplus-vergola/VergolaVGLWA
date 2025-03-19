@@ -46,7 +46,7 @@ if(isset($_POST['delete']))
  
 
   if($has_error==0){
-    $sql = 'DELETE FROM ver_chronoforms_data_materials_vic WHERE cf_id='.$cf_id;
+    $sql = 'UPDATE ver_chronoforms_data_materials_vic SET status = "deleted" WHERE cf_id='.$cf_id;
     
     $result = mysql_query($sql); 
     header('Location:'.JURI::base().'system-management-vic/raw-material-listing-vic'); 

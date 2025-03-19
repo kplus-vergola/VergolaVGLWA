@@ -22,7 +22,7 @@ $projectInfo = mysql_fetch_array($resulProject);
 
 
 
-if($QuoteIDAlpha == "CRV") {
+if($QuoteIDAlpha == "CRW") {
 $result = mysql_query("SELECT * FROM ver_chronoforms_data_clientpersonal_vic WHERE clientid  = '$QuoteID'");
 $retrieve = mysql_fetch_array($result);
 if (!$result) 

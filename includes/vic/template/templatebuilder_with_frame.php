@@ -161,7 +161,7 @@ if (!$resultb)
 <p><b>Re:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b > Preliminary Quotation for a Vergola Roof and Frame System</b></p>
 <p><b>Project:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b > A three bay installed Vergola </b></p>
 <br/>
-<p>Our Ref NO CRV 4517</p><br/>
+<p>Our Ref NO CRW 4517</p><br/>
 
 <p>Thank you for your request for a quotation. </p><br/>
 

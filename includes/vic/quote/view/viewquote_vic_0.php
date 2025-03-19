@@ -79,7 +79,7 @@ if(isset($_POST['delete_quote'])){
 
 }
  
-if(substr($ProjectID, 0,3)!="PRV"){ //substr($ProjectID, 0,3)!="QID" || substr($ProjectID, 0,4)=="QIDV"
+if(substr($ProjectID, 0,3)!="PRW"){ //substr($ProjectID, 0,3)!="QID" || substr($ProjectID, 0,4)=="QIDV"
 	require "view_old_quote.php";
 	return;
 }
@@ -132,7 +132,7 @@ if($retrieveff['is_tender_quote']==1){
 //$is_builder = $retrieveff['is_builder'];
 //error_log("ref: ".$ref, 3,'C:\\xampp\htdocs\\vergola_contract_system_v4_vic\\my-error.log');
 //error_log(print_r($retrieveff,true), 3,'C:\\xampp\htdocs\\vergola_contract_system_v4_vic\\my-error.log');
-// if(substr($QuoteID,0,3)=="BRV"){
+// if(substr($QuoteID,0,3)=="BRW"){
 // 	$is_builder = 1;
 // 	//error_log('is builder', 3,'C:\\xampp\htdocs\\vergola_contract_system_v4_vic\\my-error.log');
 // }
@@ -574,7 +574,7 @@ if($ref_page=="contracts"){
 
         <?php if($ref=="back"){ ?>
         	<input type="button" class="save-btn" value="Cancel" name="cancel1" id="cancel" onClick="history.back();" />
-        <?php }else if($ref!=""){ ?>  <!--if($QuoteIDAlpha == 'CRV')-->
+        <?php }else if($ref!=""){ ?>  <!--if($QuoteIDAlpha == 'CRW')-->
         	<input type="button" class="save-btn" value="Cancel" name="cancel1" id="cancel" onClick="location.href='<?php echo JURI::base().$ref; ?>'"  />	
         <?php }else{ ?> 
 			<input type="button" class="save-btn" value="Cancel" name="cancel2" id="cancel" onClick="location.href='<?php echo JURI::base(). "client-listing-vic/client-folder-vic?cid=".$QuoteID; ?>'" />

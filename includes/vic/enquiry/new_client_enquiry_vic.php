@@ -13,7 +13,7 @@ $next_increment = $row['Auto_increment'];
 
 $client_code = "";
 if(HOST_SERVER=="Victoria"){
-  $client_code = "CRV";
+  $client_code = "CRW";
 }else if(HOST_SERVER=="SA"){
   $client_code = "CR";
 }else if(HOST_SERVER=="LA"){
@@ -182,7 +182,8 @@ if(isset($_POST['update']) || isset($_POST['send_and_update']) )
     echo "first name: " .  $first;
     echo "last name: " . $last;
 */
-
+  $builder_name = mysql_escape_string($_POST['builder_name']);
+  $builder_contact = mysql_escape_string($_POST['builder_contact']); 
   $BuilderContactTitle = mysql_escape_string($_POST['btitle']); 
   $BuilderContactFirstName = mysql_escape_string($_POST['contact_firstname']);   
   $BuilderContactLastName = mysql_escape_string($_POST['contact_lastname']); 
@@ -316,7 +317,7 @@ $next_increment = $row['Auto_increment'];
 
 $client_code = "";
 if(HOST_SERVER=="Victoria"){
-  $client_code = "CRV";
+  $client_code = "CRW";
 }else if(HOST_SERVER=="SA"){
   $client_code = "CR";
 }else if(HOST_SERVER=="LA"){
@@ -743,7 +744,7 @@ if(isset($_REQUEST['pid']) && $_REQUEST['pid']>0)
   $is_edit = 1;
   $pid = mysql_real_escape_string($_REQUEST['pid']);
 
-  //if(substr($client_id, 0,3)=="CRV"){
+  //if(substr($client_id, 0,3)=="CRW"){
 
 
   $sql = "SELECT *, DATE_FORMAT(datelodged,'".SQL_DFORMAT."') fdatelodged, DATE_FORMAT(appointmentdate,'".SQL_DFORMAT." @ %h:%i %p') fappointmentdate  FROM ver_chronoforms_data_clientpersonal_vic WHERE pid={$pid} ";

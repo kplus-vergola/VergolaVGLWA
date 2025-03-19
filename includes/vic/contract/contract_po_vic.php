@@ -231,7 +231,8 @@ $process_po = 0;
 
 
 <tr><td colspan="7" class="subheading" data-section='Frame' > <?php if($cat['section']=="Frame"){ echo "Framework"; }else if($cat['section']=="Fixings"){ echo "Fittings"; }else{ echo $cat['section']; } ?>   </td></tr>
-<tr>
+<!-- 
+<tr hidden>
 
 		<td colspan="7" style="font-weight:bold">
 				
@@ -319,7 +320,7 @@ $process_po = 0;
 			 
 		</td>
 	</tr>
-
+ -->
 <?php
 
 
@@ -433,8 +434,85 @@ while ($bm = mysql_fetch_assoc($qbm)) {
 	</tbody>
 
 <?php } //end of section 
- 
-?> 	  
+?>
+<!--  Modified code to make it more consistent, transfered the buttons to the bottom part of the section like BoM -->
+<tr>
+
+		<td colspan="7" style="font-weight:bold">
+				
+			<?php
+			
+
+			$has_materials = 0;
+		
+			$sql = "SELECT COUNT(id) AS record_count, process_po FROM  ver_chronoforms_data_contract_bom_meterial_vic AS bm JOIN ver_chronoforms_data_inventory_vic AS inv ON inv.inventoryid=bm.inventoryid WHERE bm.projectid = '$ListProjectID' AND inv.section='{$cat['section']}'   "; 
+						
+			$sql1 = "SELECT process_po FROM ver_chronoforms_data_contract_bom_meterial_vic AS bm INNER JOIN ver_chronoforms_data_contract_bom_vic AS b ON b.contract_item_cf_id=bm.contract_item_cf_id WHERE bm.projectid = '$ListProjectID' AND bm.section='{$cat['section']}'   "; 
+			//error_log( $sql, 3,'C:\\xampp\htdocs\\vergola_contract_system_v4_us\\my-error.log');
+			$req = mysql_query ($sql) or die ('request "Could not execute SQL query" '.$sql);  			
+			$n = mysql_num_rows($req);			
+			$r = mysql_fetch_assoc($req);
+			if($n>0){
+				$has_materials = 1;
+				$process_po = $r['process_po'];
+			}else{
+				echo "</td> </tr>";
+				continue;
+			}		
+			
+			
+			if($process_po==0 && $is_summary_view==0 ){
+                //process user_access_profiles
+                if ($current_signed_in_user_access_profiles['record action']['save and process po'] == true) {
+					echo "<input type=\"submit\" class=\"btn\" value=\"Save & Process PO\" name=\"update_materials\"  style=\"width:180px; padding: 5px; line-height: 1em;\"  \> ";
+                } //end if
+			}else 
+			if($process_po==1 && $is_summary_view==1){
+
+				$titleID = $ListProjectID."_"."frame"."_".mt_rand(); 
+
+				$sql = "SELECT * FROM  ver_chronoforms_data_contract_bom_meterial_vic AS bm  
+				JOIN ver_chronoforms_data_materials_vic AS m ON m.cf_id=bm.materialid 
+				JOIN ver_chronoforms_data_supplier_vic AS s ON s.supplierid=bm.supplierid 
+				JOIN ver_chronoforms_data_inventory_vic AS inv ON inv.inventoryid=bm.inventoryid  
+				WHERE bm.projectid = '{$ListProjectID}' AND bm.inventoryid IN (SELECT i.inventoryid FROM ver_chronoforms_data_contract_bom_vic AS i 
+				WHERE i.projectid = '{$ListProjectID}' AND is_reorder=0 ) AND inv.section='{$cat['section']}' GROUP BY bm.supplierid   ";  
+			//error_log( $sql, 3,'C:\\xampp\htdocs\\vergola_contract_system_v4_us\\my-error.log');	
+			$qsup = mysql_query ($sql);
+				$is_first = 1;
+				
+				while ($sup = mysql_fetch_assoc($qsup)) {
+
+					//error_log( print_r($sup,true), 3,'C:\\xampp\htdocs\\vergola_contract_system_v4_us\\my-error.log');	
+					if($is_first==1){
+						echo "Print Purchase Order for : ";   
+						$is_first=0;
+					}
+					 
+			?>   
+
+				<input type="hidden" id="frame_po_titleID"   value="<?php echo $titleID; ?>" />  
+
+				<a id="frame_create_po" class="btn btn-s" rel="nofollow" title="PDF" onclick="window.open(this.href,'win2','status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=auto,height=auto,directories=no,location=no'); return false;" href="index.php?projectid=<?php echo $ListProjectID; ?>&section=<?php echo $cat['section']; ?>&titleID=<?php echo $titleID; ?>&supplierid=<?php echo $sup['supplierid']; ?>&option=com_chronoforms&tmpl=component&chronoform=Letters_TemplateUpdate_PDF_Vic" style="margin-right:5px; " > <?php echo $sup['company_name']; ?> </a> 
+
+				<!-- <a rel=\"nofollow\" onclick=\"window.open(this.href,'win2','status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=auto,height=auto,directories=no,location=no'); return false;\" href=\"index.php?cf_id=".$cf_id."&pid=".$info['cf_id']."&option=com_chronoforms&tmpl=component&chronoform=Download-PDF\">Click Here <img src='".JURI::base()."templates/".$mainframe->getTemplate()."/images/file_pdf.png'  /></a> -->
+	 
+		<?php
+			} 
+		}
+
+			if($has_materials && $process_po && $is_summary_view==0){
+                //process user_access_profiles
+                if ($current_signed_in_user_access_profiles['record action']['cancel po'] == true) {
+					echo "<input type=\"submit\" class=\"btn\" value=\"Cancel PO\" name=\"cancel_process_po\"  style=\"width:100px; padding: 5px; line-height: 1em;\"  \> ";
+                } //end if
+			} 
+			
+		?>
+
+			 
+		</td>
+	</tr>
  
  </table>
 </form> 
@@ -484,7 +562,7 @@ while ($bm = mysql_fetch_assoc($qbm)) {
 			if($process_po==0){
                 //process user_access_profiles
                 if ($current_signed_in_user_access_profiles['record action']['save and process po'] == true) {
-					echo "<input type=\"submit\" class=\"btn\" value=\"Save & Process PO\" name=\"update_materials\"  style=\"width:180px; padding: 5px; line-height: 1em;\"  \> ";
+					echo "<input type=\"submit\" class=\"btn\" value=\"Save & Process PO 333\" name=\"update_materials\"  style=\"width:180px; padding: 5px; line-height: 1em;\"  \> ";
                 } //end if
 			}else{
 

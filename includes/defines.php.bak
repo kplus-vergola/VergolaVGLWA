@@ -30,7 +30,7 @@ define('JPATH_THEMES',			JPATH_BASE . '/templates');
 define('JPATH_CACHE',			JPATH_BASE . '/cache');
 define('JPATH_MANIFESTS',		JPATH_ADMINISTRATOR . '/manifests');
 define('IS_TEST_MODE',		'0');
-define('HOST_SERVER',       'Victoria');
+define('HOST_SERVER',		'Victoria');
 //define('METRIC_SYSTEM',		'inch');
 define('METRIC_SYSTEM',		'meter');
 

@@ -50,7 +50,7 @@ $usergroup = 'Victoria Users';
 **/
 
 $search = $_POST['search_string'];
-$sql = "SELECT * FROM ver_users WHERE usertype LIKE ('$usergroup')";
+$sql = "SELECT * FROM ver_users WHERE usertype LIKE ('$usergroup') AND status != 'deleted'";
 $result = mysql_query($sql) or die(mysql_error());
 
 if ($search)

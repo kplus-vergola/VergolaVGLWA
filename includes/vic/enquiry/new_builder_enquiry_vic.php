@@ -254,12 +254,12 @@ $qShowStatus = "SHOW TABLE STATUS LIKE 'ver_chronoforms_data_builderpersonal_vic
 $qShowStatusResult = mysql_query($qShowStatus) or die ( "Query failed: " . mysql_error() . "<br/>" . $qShowStatus );
 $row = mysql_fetch_assoc($qShowStatusResult);
 $next_increment = $row['Auto_increment'];
-$getclientid = 'BRV'.$next_increment;
+$getclientid = 'BRW'.$next_increment;
 
 
 if(isset($_POST['save']) || isset($_POST['sendmail']))
 {	
-    //$ClientID = 'BRV'.$row['Auto_increment'];
+    //$ClientID = 'BRW'.$row['Auto_increment'];
     $BuildID = $_POST['builderid'];
     $BuildSuburbID = $_POST['bsuburbid'];
 	$BuildName = $_POST['builder_name'];
@@ -536,7 +536,7 @@ if(isset($_REQUEST['pid']))
   $is_edit = 1;
   $pid = mysql_real_escape_string($_REQUEST['pid']);
 
-  //if(substr($client_id, 0,3)=="CRV"){
+  //if(substr($client_id, 0,3)=="CRW"){
   $sql = "SELECT *, DATE_FORMAT(datelodged,'%d-%b-%Y') fdatelodged, DATE_FORMAT(appointmentdate,'%d-%b-%Y @ %h:%i %p') fappointmentdate  FROM ver_chronoforms_data_builderpersonal_vic WHERE pid={$pid} ";
     
   $builder = mysql_fetch_assoc(mysql_query($sql));

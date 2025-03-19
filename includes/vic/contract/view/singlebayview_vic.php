@@ -175,7 +175,7 @@ while ($i < $description || $i < $inventoryid || $i < $web || $i < $colours || $
 	++$i;
 }
 
-if($QuoteIDAlpha == 'CRV'){		
+if($QuoteIDAlpha == 'CRW'){		
 header('Location:'.JURI::base().'client-listing-vic/client-folder-vic?pid='.$QuoteIDNum);} 
 else {
 header('Location:'.JURI::base().'builder-listing-vic/builder-folder-vic?pid='.$QuoteIDNum);}

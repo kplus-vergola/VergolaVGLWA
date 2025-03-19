@@ -90,7 +90,7 @@ $user = JFactory::getUser();
 $is_tender_quote=0;
 $is_builder = 0;
 
-if(substr($QuoteID, 0,3)=="TRV"){
+if(substr($QuoteID, 0,3)=="TRW"){
 	$sql = "SELECT * FROM ver_chronoforms_data_builderpersonal_vic WHERE tenderid  = '$QuoteID' LIMIT 1";
 	$is_tender_quote=1;
 	$is_builder = 1;
@@ -113,7 +113,7 @@ $InstallComm=$rettable['install_comm'];
 
 
 //error_log(substr($QuoteID,3), 3,'C:\\xampp\htdocs\\vergola_contract_system_v4_vic\\my-error.log');
-// if(substr($QuoteID,0,3)=="BRV"){
+// if(substr($QuoteID,0,3)=="BRW"){
 // 	$is_builder = 1;
 // 	//error_log('is builder ddsaecsadfa;l;po lld', 3,'C:\\xampp\htdocs\\vergola_contract_system_v4_vic\\my-error.log');
 // } 

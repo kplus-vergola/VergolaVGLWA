@@ -88,7 +88,7 @@ if ($projectid != '') {
 	$quote_projectid = "";
 
 	//error_log("SELECT * FROM ver_chronoforms_data_contract_details_vic WHERE projectid = '$projectid' ORDER BY quotedate DESC", 3,'C:\\xampp\htdocs\\vergola_contract_system_v4_sa\\my-error.log'); 
-	if(substr($projectid, 0,3)!="PRV"){ //substr($projectid, 0,3)=="VIC" || substr($projectid, 0,3)=="QID" || substr($projectid, 0,4)=="QIDV"
+	if(substr($projectid, 0,3)!="PRW"){ //substr($projectid, 0,3)=="VIC" || substr($projectid, 0,3)=="QID" || substr($projectid, 0,4)=="QIDV"
 		
 		if(empty($retrievedetails['project_name'])){
 			$sql = "SELECT * FROM ver_chronoforms_data_followup_vic WHERE quoteid = '{$retrievedetails['quoteid']}' ORDER BY cf_id DESC LIMIT 1 ";

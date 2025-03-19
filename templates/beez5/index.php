@@ -120,7 +120,7 @@ return $m[0];
 					<span class="header1" style="text-align:center; line-height:1.7; text-decoration:underline;">
 					<?php 
 						if (JFactory::getUser()->get('guest')) {
-						     echo "<label style='border-top:3px; border-bottom:3px; color:#3F286D; font-size:2em;'>VICTORIA</label>";
+						     echo "<label style='border-top:3px; border-bottom:3px; color:#3F286D; font-size:2em;'>Western Australia</label>";
  						}
 						echo htmlspecialchars($templateparams->get('sitedescription'));
 
