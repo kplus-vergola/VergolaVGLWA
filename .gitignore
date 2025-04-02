@@ -11,7 +11,12 @@
 
 
 # ignore file(s)
-configuration.php
 custom_agent.php
 custom_agent_configs.php
 custom_agent_functions.php
+
+# Ignore configuration.php only in the root directory
+/configuration.php
+
+# Allow configuration.php files in subdirectories
+!*/configuration.php
