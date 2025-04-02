@@ -18,5 +18,8 @@ jobs:
       - name: Deploy Application
         run: |
           cd C:/xampp/htdocs/staging/VergolaVGLWA
+          git branch -a
+          git fetch -a
+          git checkout -b staging origin/staging
 
           git pull origin staging
