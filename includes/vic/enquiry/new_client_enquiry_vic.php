@@ -669,6 +669,10 @@ function send_email(){
     <td style=\"border-bottom: 1px solid #999;border-right: 1px solid #999;border-left: 1px solid #999;padding:5px;\">" . $_POST['cemail'] . "</td>
   </tr>
   <tr>
+    <td style=\"border-bottom: 1px solid #999;border-left: 1px solid #999;padding:5px;\">Appointment</td>
+    <td style=\"border-bottom: 1px solid #999;border-right: 1px solid #999;border-left: 1px solid #999;padding:5px;\">" . $_POST['iappointment'] . "</td>
+  </tr>
+  <tr>
     <td style=\"border-bottom: 1px solid #999;border-left: 1px solid #999;padding:5px;\">Drawing</td>
     <td style=\"border-bottom: 1px solid #999;border-right: 1px solid #999;border-left: 1px solid #999;padding:5px;\">" . $_POST['checkfile'] . "</td>
   </tr>
@@ -723,10 +727,11 @@ function send_email(){
   </tr>
 </table>";
 
-    $headers = "From:" . $from. "\r\n";
+  $headers = "From: salesleads@vergola.com\r\n";
+  // $headers = "From:" . $from. "\r\n";
   $headers .= "MIME-Version: 1.0\r\n";
   $headers .= "Content-Type: text/html; charset=ISO-8859-1\r\n";
-   // $headers2 = "From:" . $to. "\r\n";
+  // $headers2 = "From:" . $to. "\r\n";
   //$headers2 .= "MIME-Version: 1.0\r\n";
   //$headers2 .= "Content-Type: text/html; charset=ISO-8859-1\r\n";
   return $mail_result = mail($to,$subject,$message,$headers);
