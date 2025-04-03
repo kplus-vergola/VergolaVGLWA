@@ -11,11 +11,13 @@ $next_increment = $row['Auto_increment'];
 
 $client_code = "";
 if(HOST_SERVER=="Victoria"){
-  $client_code = "CRW";
+  $client_code = "CRV";
 }else if(HOST_SERVER=="SA"){
   $client_code = "CR";
 }else if(HOST_SERVER=="LA"){
   $client_code = "CRC";
+}else if(HOST_SERVER=="WA"){
+  $client_code = "CRW";
 }
 
   $clientid = $client_code.$next_increment;
