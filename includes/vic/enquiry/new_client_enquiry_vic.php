@@ -639,7 +639,7 @@ function send_email(){
   // Email to the Sales Rep
   $message = "<table cellpadding=\"0\" cellspacing=\"0\" style=\"border-top: 1px solid #999;width:550px; font-family:calibri; font-size:13px;\">
   <tr>
-    <td style=\"width:120px;border-bottom: 1px solid #999;border-left: 1px solid #999;padding:5px;\"><img src='".JURI::base().'images/vergola-email-logo.png'."'></td>
+    <td style=\"width:120px;border-bottom: 1px solid #999;border-left: 1px solid #999;padding:5px;\"><img src='".JURI::base().'images/vergola_logo.png'."'></td>
     <td style=\"border-bottom: 1px solid #999;border-right: 1px solid #999;border-left: 1px solid #999;padding:5px;\">Enquiry Date: " .$_POST['idate']. "</td>
   </tr>
   <tr>
@@ -655,7 +655,7 @@ function send_email(){
     <td style=\"border-bottom: 1px solid #999;border-right: 1px solid #999;border-left: 1px solid #999;padding:5px;\">" . $_POST['firstname'] . " " . $_POST['lastname']. "</td>
   </tr>
   <tr>
-    <td style=\"border-bottom: 1px solid #999;border-left: 1px solid #999;padding:5px;\">Address</td>
+    <td style=\"border-bottom: 1px solid #999;border-left: 1px solid #999;padding:5px;\">Site Address</td>
     <td style=\"border-bottom: 1px solid #999;border-right: 1px solid #999;border-left: 1px solid #999;padding:5px;\">" . $_POST['ssitename'] . " " . $_POST['sstreetno'] . " " . $_POST['sstreetname'] . " " . $_POST['saddress1'] . " " . $_POST['saddress2'] . ", " . $_POST['site_suburb'] . " " . $_POST['site_state'] . " " . $_POST['site_postcode'] . "</td>
   </tr>
   <tr>
