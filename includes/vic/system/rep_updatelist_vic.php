@@ -249,27 +249,34 @@ if (isset($_POST['view_sales_target'])) {
     // Get the current URL
     $current_url = "http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
-    // Define the new parameters (you can replace these with actual values from your form or somewhere else)
-    $dFrom = $_POST["dFrom"]; // Replace with your actual value
-    $dTo = $_POST["dTo"];   // Replace with your actual value
+    // Get form values
+    $dFrom = isset($_POST['dFrom']) ? $_POST['dFrom'] : '';
+    $dTo = isset($_POST['dTo']) ? $_POST['dTo'] : '';
 
-    // Parse the URL to add/modify the query parameters
+    // Parse the URL
     $url_parts = parse_url($current_url);
-    
-    // Parse existing query parameters (if any)
-    parse_str($url_parts['query'], $query_params);
-    
-    // Add the new parameters
+
+    // Handle missing query key safely for older PHP
+    $query_string = isset($url_parts['query']) ? $url_parts['query'] : '';
+    parse_str($query_string, $query_params);
+
+    // Add/modify parameters
     $query_params['dFrom'] = $dFrom;
     $query_params['dTo'] = $dTo;
-    
-    // Rebuild the query string
+
+    // Build the query string
     $new_query = http_build_query($query_params);
-    
-    // Construct the new URL with the modified query string
-    $new_url = $url_parts['scheme'] . "://" . $url_parts['host'] . $url_parts['path'] . '?' . $new_query;
-    
-    // Redirect to the new URL
+
+    // Handle port
+    $host_with_port = $url_parts['host'];
+    if (isset($url_parts['port'])) {
+        $host_with_port .= ':' . $url_parts['port'];
+    }
+
+    // Rebuild the URL
+    $new_url = $url_parts['scheme'] . '://' . $host_with_port . $url_parts['path'] . '?' . $new_query;
+
+    // Redirect
     header("Location: $new_url");
     exit();
 }
