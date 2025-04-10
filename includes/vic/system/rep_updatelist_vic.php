@@ -370,52 +370,75 @@ if(isset($_POST['cancel']))
 	<input type="hidden" name="rep_id" value="<?php echo $RepID ?>" />
 	<input type="hidden" name="id" value="<?php echo $id ?>" />
 	<table id="tblSalesTarget" class="update-table">
-	    <tr>
+		<tr>
 			<td class="row1" width="200">Target sales from</td>
 			<td class="row2" width="200" colspan="2">
 			<?php
-				$year = date('Y'); 
-				$cMonth = date('m');
-				if($cMonth<7){
-					$year = $year - 1;
+				$dFrom = null;
+				$dTo = null;
+				$year = null;
+
+				if(isset($_GET['dFrom']) && isset($_GET['dTo'])){
+				    $dFrom = $_GET['dFrom'];
+				    $dTo = $_GET['dTo'];
+				    $year = date('Y', strtotime($dFrom));
+				    $year2 = date('Y', strtotime($dTo));
+
+				} else {
+				    $yearResult = mysql_query("SELECT MAX(year) AS latest_year FROM ver_rep_sales_target WHERE rep_id='$RepID'");
+				    $yearRow = mysql_fetch_assoc($yearResult);
+				    $year = $yearRow['latest_year'] ? $yearRow['latest_year'] : date('Y');
+				    $year2 = $year;
+
+				    $dFrom = substr($r['dateFromTo'], 0,10);
+				    $dTo = substr($r['dateFromTo'], -10,10);
+
 				}
 
 				$qResult = mysql_query("SELECT * FROM ver_rep_sales_target WHERE rep_id='$RepID' AND year={$year}");
 				//error_log("...=".$qResult, 3,'C:\\xampp\htdocs\\vergola_contract_system_v4_sa\\my-error.log');
 				$r = mysql_fetch_assoc($qResult);
 
-				if(mysql_num_rows($r)<1){
+				// if(mysql_num_rows($r)<1){
+				if(mysql_num_rows($qResult) < 1){
 					//error_log("HERE=".$qResult, 3,'C:\\xampp\htdocs\\vergola_contract_system_v4_sa\\my-error.log');
 					$qResult = mysql_query("SELECT * FROM ver_rep_sales_target WHERE rep_id='Default Target' AND year={$year}");
 					$r = mysql_fetch_assoc($qResult);
 				}
-				
+				if (strlen($dFrom) == 0 || strlen($dTo) == 0) {
+				    $dFrom = date('Y') . '-01-01';
+				    $endOfYear = new DateTime('last day of December ' . date('Y'));
+				    $dTo = $endOfYear->format('Y-m-d');
+				}
 
-				
-				//error_log("r: ".print_r($r,true), 3,'C:\\xampp\htdocs\\vergola_contract_system_v4_sa\\my-error.log');
-				$dFrom = substr($r['dateFromTo'], 0,10);
-				$dTo = substr($r['dateFromTo'], -10,10);
+				$fromDate = new DateTime($dFrom);
+				$toDate = new DateTime($dTo);
 
-	            if (strlen($dFrom) == 0 || strlen($dTo) == 0) {
-                    $dFrom = date('Y') . '-07-01';
-                    $dTo = (intval(date('Y')) + 1) . '-06-30';
+				$formatFrom = date_format(date_create($dFrom), PHP_DFORMAT);
+				$formatTo = date_format(date_create($dTo), PHP_DFORMAT);
 
-                    // $dFrom = (intval(date('Y')) - 1) . '-07-01';
-                    // $dTo = date('Y') . '-06-30';
-	            }
+				$interval = $fromDate->diff($toDate);
 
-				$formatFrom = date_format(date_create($dFrom),PHP_DFORMAT);
-				$formatTo = date_format(date_create($dTo),PHP_DFORMAT);
+				// if ($interval->y !== 1 && $interval->m !== 0) {
+				//     $toDate = clone $fromDate;
+				//     $toDate->modify('+11 months');
+				// }
 
+				$toDate = clone $fromDate;
+				$toDate->modify('+11 months');
 
-			?>
-						<input type="hidden" value="<?php echo $dFrom; ?>" name="dFrom" id="dFrom"  />
-						<input type="hidden" value="<?php echo $dTo; ?>" name="dTo" id="dTo"/>
-						<input type="text" value="<?php echo $formatFrom; ?>" class="datepicker" style="display: inline;width:150px; " id="dpFrom" > 		
-						
-						<b>to :</b> &nbsp;&nbsp;&nbsp;&nbsp;
-						<input type="text" value="<?php echo $formatTo; ?>" class="datepicker" style="display: inline;width:150px; "  id="dpTo" > 		
-						<input type="button" name="" value="Create" class="" onclick="createMonthFields();" style="width:100px;" />
+				$toDate->modify('last day of this month');
+
+				$formatTo = date_format(date_create($toDate->format('Y-m-d')), PHP_DFORMAT);
+				?>
+					<input type="hidden" value="<?php echo $dFrom; ?>" name="dFrom" id="dFrom"  />
+					<input type="hidden" value="<?php echo $dTo; ?>" name="dTo" id="dTo"/>
+					<input type="text" value="<?php echo $formatFrom; ?>" class="datepicker" style="display: inline;width:150px; " id="dpFrom" > 		
+					
+					<b>to :</b> &nbsp;&nbsp;&nbsp;&nbsp;
+					<input type="text" value="<?php echo $formatTo; ?>" class="datepicker" style="display: inline;width:150px; "  id="dpTo" > 		
+					<!-- <input type="button" name="" value="Create" class="" onclick="createMonthFields();" style="width:100px; margin-top: 10px;" /> -->
+					<input type="submit" name="view_sales_target" value="Open" class="" style="width:100px; margin-top: 10px;" />
 			</td>
 		</tr>		
 		<tr>
@@ -423,31 +446,73 @@ if(isset($_POST['cancel']))
 			<td class="row2" width="200">&nbsp;</td>
 		</tr>
 		<?php 
-			$qResult = mysql_query("SELECT * FROM ver_rep_sales_target WHERE rep_id='$RepID'  AND year={$year}");
-			//error_log("SELECT * FROM ver_rep_sales_target WHERE rep_id='$RepID'", 3,'C:\\xampp\htdocs\\vergola_contract_system_v4_sa\\my-error.log');
-		 	//error_log("SELECT * FROM ver_rep_sales_target WHERE rep_id='$RepID'  AND year={$year}", 3,'/home/vergola/public_html/quote-system/my-error.log');	
-		 	$i=0;
-			while ($r = mysql_fetch_assoc($qResult)) { 
-				//print_r($r);
-				$mDate = date_format(date_create($r["target_date"]),"F");
-				$fDate = date_format(date_create($r["target_date"]),"Y-m-d");
-				if($i==0){echo "<tr><th width='200'>Month</th><th width='200' style='text-align:left;'>Sales Target</th><th width='200' style='text-align:left;'>Target Contract</th></tr> ";}
+			// Fetch all data for the year
+			$qResult = mysql_query("SELECT * FROM ver_rep_sales_target WHERE rep_id='$RepID' AND (year={$year} OR year={$year2})");
 
-				echo "<tr>";
-				echo "<td >{$mDate}</td><td><input type='hidden' name='target_date[]' value='{$fDate}' /><input type='text' name='target_amount[]' value='".$r["target_amount"]."'></td><td><input type='text' name='target_contract[]' value='".$r["target_contract"]."'></td>";	
-				echo "</tr>"; 
-				$i++;
+			// Check if query has no results
+			if (mysql_num_rows($qResult) == 0) {
+				if (!isset($_GET['dFrom']) && !isset($_GET['dTo'])) {
+					return;
+				}
 			}
 
-			if($i>0){
+			// Store the fetched data in an array indexed by YYYY-MM
+			$existingTargets = [];
+			while ($r = mysql_fetch_assoc($qResult)) {
+				$monthKey = date('Y-m', strtotime($r['target_date']));
+				$existingTargets[$monthKey] = $r;
+			}
+
+			// Start and end of date range
+			$start = new DateTime($dFrom);
+			$end = new DateTime($dTo);
+			$end->modify('first day of next month');
+
+			echo "<tr><th width='200'>Month</th><th width='200' style='text-align:left;'>Sales Target</th><th width='200' style='text-align:left;'>Target Contract</th></tr>";
+
+			while ($start < $end) {
+				$monthKey = $start->format('Y-m');
+				$monthDate = $start->format('Y-m-d');
+				$monthName = $start->format('F');
+
+				if (isset($existingTargets[$monthKey])) {
+					// Existing data
+					$target = $existingTargets[$monthKey];
+					$targetAmount = $target["target_amount"];
+					$targetContract = $target["target_contract"];
+				} else {
+					// Missing month — insert empty with 0
+					$targetAmount = 0;
+					$targetContract = 0;
+				}
+
 				echo "<tr>";
-				echo "<td> &nbsp; </td><td><input type='submit' value='Update' style='width:100px; padding:3px;' name='update_sales_target' /></td>";
-				echo "</tr>"; 
+				echo "<td>{$monthName}</td>
+				<td>
+				<input type='hidden' name='target_date[]' value='{$monthDate}' />
+				<input type='text' name='target_amount[]' value='{$targetAmount}' />
+				</td>
+				<td>
+				<input type='text' name='target_contract[]' value='{$targetContract}' />
+				</td>";
+				echo "</tr>";
+
+				$start->modify('first day of next month');
+			}
+
+						// Choose button based on whether any data existed
+			if (count($existingTargets) > 0) {
+				echo "<tr>
+				<td>&nbsp;</td>
+				<td><input type='submit' value='Update' style='width:100px; padding:3px;' name='update_sales_target' /></td>
+				</tr>";
+			} else {
+				echo "<tr>
+				<td>&nbsp;</td>
+				<td><input type='submit' value='Save' style='width:100px; padding:3px;' name='save_sales_target' /></td>
+				</tr>";
 			}
 		?>
-	 
-		
-		 
 	</table>
 </div>
 </form>
