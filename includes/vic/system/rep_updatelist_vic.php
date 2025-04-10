@@ -245,6 +245,35 @@ if(isset($_POST['cancel']))
 	header("Location: index.php");			
 }
 
+if (isset($_POST['view_sales_target'])) {
+    // Get the current URL
+    $current_url = "http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+
+    // Define the new parameters (you can replace these with actual values from your form or somewhere else)
+    $dFrom = $_POST["dFrom"]; // Replace with your actual value
+    $dTo = $_POST["dTo"];   // Replace with your actual value
+
+    // Parse the URL to add/modify the query parameters
+    $url_parts = parse_url($current_url);
+    
+    // Parse existing query parameters (if any)
+    parse_str($url_parts['query'], $query_params);
+    
+    // Add the new parameters
+    $query_params['dFrom'] = $dFrom;
+    $query_params['dTo'] = $dTo;
+    
+    // Rebuild the query string
+    $new_query = http_build_query($query_params);
+    
+    // Construct the new URL with the modified query string
+    $new_url = $url_parts['scheme'] . "://" . $url_parts['host'] . $url_parts['path'] . '?' . $new_query;
+    
+    // Redirect to the new URL
+    header("Location: $new_url");
+    exit();
+}
+
 ?>
 
 <form method="post">
