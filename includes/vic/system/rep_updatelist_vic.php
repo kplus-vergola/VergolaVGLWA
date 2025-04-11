@@ -425,10 +425,6 @@ if (isset($_POST['view_sales_target'])) {
 				    $yearRow = mysql_fetch_assoc($yearResult);
 				    $year = $yearRow['latest_year'] ? $yearRow['latest_year'] : date('Y');
 				    $year2 = $year;
-
-				    $dFrom = substr($r['dateFromTo'], 0,10);
-				    $dTo = substr($r['dateFromTo'], -10,10);
-
 				}
 
 				$qResult = mysql_query("SELECT * FROM ver_rep_sales_target WHERE rep_id='$RepID' AND year={$year}");
@@ -441,6 +437,12 @@ if (isset($_POST['view_sales_target'])) {
 					$qResult = mysql_query("SELECT * FROM ver_rep_sales_target WHERE rep_id='Default Target' AND year={$year}");
 					$r = mysql_fetch_assoc($qResult);
 				}
+
+				if(!isset($_GET['dFrom']) && !isset($_GET['dTo'])){
+					$dFrom = substr($r['dateFromTo'], 0,10);
+					$dTo = substr($r['dateFromTo'], -10,10);
+				}
+
 				if (strlen($dFrom) == 0 || strlen($dTo) == 0) {
 				    $dFrom = date('Y') . '-01-01';
 				    $endOfYear = new DateTime('last day of December ' . date('Y'));
