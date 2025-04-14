@@ -409,66 +409,41 @@ if (isset($_POST['view_sales_target'])) {
 		<tr>
 			<td class="row1" width="200">Target sales from</td>
 			<td class="row2" width="200" colspan="2">
-			<?php
-				$dFrom = null;
-				$dTo = null;
-				$year = null;
+				<?php
+                    $dFrom = null;
+                    $dTo = null;
+                    $year = null;
+                    $year2 = null;
 
-				if(isset($_GET['dFrom']) && isset($_GET['dTo'])){
-				    $dFrom = $_GET['dFrom'];
-				    $dTo = $_GET['dTo'];
-				    $year = date('Y', strtotime($dFrom));
-				    $year2 = date('Y', strtotime($dTo));
+                    if(isset($_GET['dFrom']) && isset($_GET['dTo'])){
+                        $dFrom = $_GET['dFrom'];
+                        $dTo = $_GET['dTo'];
+                        $year = date('Y', strtotime($dFrom));
+                        $year2 = date('Y', strtotime($dTo));
+                    }
 
-				} else {
-				    $yearResult = mysql_query("SELECT MAX(year) AS latest_year FROM ver_rep_sales_target WHERE rep_id='$RepID'");
-				    $yearRow = mysql_fetch_assoc($yearResult);
-				    $year = $yearRow['latest_year'] ? $yearRow['latest_year'] : date('Y');
-				    $year2 = $year;
-				}
+                    $qResult = mysql_query("SELECT * FROM ver_rep_sales_target WHERE rep_id='$RepID' AND year={$year}");
+                    $r = mysql_fetch_assoc($qResult);
 
-				$qResult = mysql_query("SELECT * FROM ver_rep_sales_target WHERE rep_id='$RepID' AND year={$year}");
-				//error_log("...=".$qResult, 3,'C:\\xampp\htdocs\\vergola_contract_system_v4_sa\\my-error.log');
-				$r = mysql_fetch_assoc($qResult);
+                    if(mysql_num_rows($qResult) < 1){
+                        $qResult = mysql_query("SELECT * FROM ver_rep_sales_target WHERE rep_id='Default Target' AND year={$year}");
+                        $r = mysql_fetch_assoc($qResult);
+                    }
 
-				// if(mysql_num_rows($r)<1){
-				if(mysql_num_rows($qResult) < 1){
-					//error_log("HERE=".$qResult, 3,'C:\\xampp\htdocs\\vergola_contract_system_v4_sa\\my-error.log');
-					$qResult = mysql_query("SELECT * FROM ver_rep_sales_target WHERE rep_id='Default Target' AND year={$year}");
-					$r = mysql_fetch_assoc($qResult);
-				}
+                    if(!isset($_GET['dFrom']) && !isset($_GET['dTo'])){
+                        $dFrom = substr($r['dateFromTo'], 0,10);
+                        $dTo = substr($r['dateFromTo'], -10,10);
+                    }
 
-				if(!isset($_GET['dFrom']) && !isset($_GET['dTo'])){
-					$dFrom = substr($r['dateFromTo'], 0,10);
-					$dTo = substr($r['dateFromTo'], -10,10);
-				}
+                    if (strlen($dFrom) == 0 || strlen($dTo) == 0) {
+                        $dFrom = date('Y') . '-01-01';
+                        $endOfYear = new DateTime('last day of December ' . date('Y'));
+                        $dTo = $endOfYear->format('Y-m-d');
+                    }
 
-				if (strlen($dFrom) == 0 || strlen($dTo) == 0) {
-				    $dFrom = date('Y') . '-01-01';
-				    $endOfYear = new DateTime('last day of December ' . date('Y'));
-				    $dTo = $endOfYear->format('Y-m-d');
-				}
-
-				$fromDate = new DateTime($dFrom);
-				$toDate = new DateTime($dTo);
-
-				$formatFrom = date_format(date_create($dFrom), PHP_DFORMAT);
-				$formatTo = date_format(date_create($dTo), PHP_DFORMAT);
-
-				$interval = $fromDate->diff($toDate);
-
-				// if ($interval->y !== 1 && $interval->m !== 0) {
-				//     $toDate = clone $fromDate;
-				//     $toDate->modify('+11 months');
-				// }
-
-				$toDate = clone $fromDate;
-				$toDate->modify('+11 months');
-
-				$toDate->modify('last day of this month');
-
-				$formatTo = date_format(date_create($toDate->format('Y-m-d')), PHP_DFORMAT);
-				?>
+                    $formatFrom = date_format(date_create($dFrom), PHP_DFORMAT);
+                    $formatTo = date_format(date_create($dTo), PHP_DFORMAT);
+                ?>
 					<input type="hidden" value="<?php echo $dFrom; ?>" name="dFrom" id="dFrom"  />
 					<input type="hidden" value="<?php echo $dTo; ?>" name="dTo" id="dTo"/>
 					<input type="text" value="<?php echo $formatFrom; ?>" class="datepicker" style="display: inline;width:150px; " id="dpFrom" > 		
@@ -483,74 +458,69 @@ if (isset($_POST['view_sales_target'])) {
 			<td class="row1" width="200">&nbsp;</td>
 			<td class="row2" width="200">&nbsp;</td>
 		</tr>
-		<?php 
-			// Fetch all data for the year
-			$qResult = mysql_query("SELECT * FROM ver_rep_sales_target WHERE rep_id='$RepID' AND (year={$year} OR year={$year2})");
+		<?php
+            if(isset($_GET['dFrom']) && isset($_GET['dTo'])){
+                // Fetch all data for the year
+                $qResult = mysql_query("SELECT * FROM ver_rep_sales_target WHERE rep_id='$RepID' AND (year>={$year} AND year<={$year2})");
 
-			// Check if query has no results
-			if (mysql_num_rows($qResult) == 0) {
-				if (!isset($_GET['dFrom']) && !isset($_GET['dTo'])) {
-					return;
-				}
-			}
+                // Store the fetched data in an array indexed by YYYY-MM
+                $existingTargets = [];
+                while ($r = mysql_fetch_assoc($qResult)) {
+                    $monthKey = date('Y-m', strtotime($r['target_date']));
+                    $existingTargets[$monthKey] = $r;
+                }
 
-			// Store the fetched data in an array indexed by YYYY-MM
-			$existingTargets = [];
-			while ($r = mysql_fetch_assoc($qResult)) {
-				$monthKey = date('Y-m', strtotime($r['target_date']));
-				$existingTargets[$monthKey] = $r;
-			}
+                // Start and end of date range
+                $start = new DateTime($dFrom);
+                $end = new DateTime($dTo);
+                $end->modify('first day of next month');
 
-			// Start and end of date range
-			$start = new DateTime($dFrom);
-			$end = new DateTime($dTo);
-			$end->modify('first day of next month');
+                echo "<tr><th width='200'>Month</th><th width='200' style='text-align:left;'>Sales Target</th><th width='200' style='text-align:left;'>Target Contract</th></tr>";
 
-			echo "<tr><th width='200'>Month</th><th width='200' style='text-align:left;'>Sales Target</th><th width='200' style='text-align:left;'>Target Contract</th></tr>";
+                while ($start < $end) {
+                    $monthKey = $start->format('Y-m');
+                    $monthDate = $start->format('Y-m-d');
+                    $monthName = $start->format('F');
 
-			while ($start < $end) {
-				$monthKey = $start->format('Y-m');
-				$monthDate = $start->format('Y-m-d');
-				$monthName = $start->format('F');
+                    if (isset($existingTargets[$monthKey])) {
+                        // Existing data
+                        $target = $existingTargets[$monthKey];
+                        $targetAmount = $target["target_amount"];
+                        $targetContract = $target["target_contract"];
+                    } else {
+                        // Missing month — insert empty with 0
+                        $targetAmount = 0;
+                        $targetContract = 0;
+                    }
 
-				if (isset($existingTargets[$monthKey])) {
-					// Existing data
-					$target = $existingTargets[$monthKey];
-					$targetAmount = $target["target_amount"];
-					$targetContract = $target["target_contract"];
-				} else {
-					// Missing month — insert empty with 0
-					$targetAmount = 0;
-					$targetContract = 0;
-				}
+                    echo "<tr>";
+                    echo "<td>{$monthName}</td>
+                        <td>
+                            <input type='hidden' name='target_date[]' value='{$monthDate}' />
+                            <input type='text' name='target_amount[]' value='{$targetAmount}' />
+                        </td>
+                        <td>
+                            <input type='text' name='target_contract[]' value='{$targetContract}' />
+                        </td>";
+                    echo "</tr>";
 
-				echo "<tr>";
-				echo "<td>{$monthName}</td>
-				<td>
-				<input type='hidden' name='target_date[]' value='{$monthDate}' />
-				<input type='text' name='target_amount[]' value='{$targetAmount}' />
-				</td>
-				<td>
-				<input type='text' name='target_contract[]' value='{$targetContract}' />
-				</td>";
-				echo "</tr>";
+                    $start->modify('first day of next month');
+                }
 
-				$start->modify('first day of next month');
-			}
-
-						// Choose button based on whether any data existed
-			if (count($existingTargets) > 0) {
-				echo "<tr>
-				<td>&nbsp;</td>
-				<td><input type='submit' value='Update' style='width:100px; padding:3px;' name='update_sales_target' /></td>
-				</tr>";
-			} else {
-				echo "<tr>
-				<td>&nbsp;</td>
-				<td><input type='submit' value='Save' style='width:100px; padding:3px;' name='save_sales_target' /></td>
-				</tr>";
-			}
-		?>
+                // Choose button based on whether any data existed
+                if (count($existingTargets) > 0) {
+                    echo "<tr>
+                            <td>&nbsp;</td>
+                            <td><input type='submit' value='Update' style='width:100px; padding:3px;' name='update_sales_target' /></td>
+                        </tr>";
+                } else {
+                    echo "<tr>
+                            <td>&nbsp;</td>
+                            <td><input type='submit' value='Save' style='width:100px; padding:3px;' name='save_sales_target' /></td>
+                        </tr>";
+                }
+            }
+        ?>
 	</table>
 </div>
 </form>
