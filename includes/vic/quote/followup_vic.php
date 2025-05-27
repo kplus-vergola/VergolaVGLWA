@@ -1,3 +1,8 @@
+<link rel="stylesheet" type="text/css" media="screen,projection" href="<?php echo JURI::base().'jscript/datetime/css/bootstrap.min.css'; ?>" />
+<link rel="stylesheet" type="text/css" media="screen,projection" href="<?php echo JURI::base().'jscript/datetime/css/bootstrap-datetimepicker.min.css'; ?>" />
+<script type="text/javascript" src="<?php echo JURI::base().'jscript/datetime/js/bootstrap.min.js'; ?>"></script>
+<script charset="UTF-8" type="text/javascript" src="<?php echo JURI::base().'jscript/datetime/js/bootstrap-datetimepicker.js'; ?>"></script>
+
 <?php  
 $resultff = mysql_query("SELECT * FROM ver_chronoforms_data_followup_vic WHERE cf_id  = '$cf_id'");
  
@@ -5,12 +10,12 @@ $resultff = mysql_query("SELECT * FROM ver_chronoforms_data_followup_vic WHERE c
 $retrieveff = mysql_fetch_array($resultff);
 if (!$resultff) {die("Error: Data not found..");}
 	$DateQuote = $retrieveff['quotedate']; //"NOW()" ; 
-	$DateDelivered = $retrieveff['qdelivered'];
+	// $DateDelivered = $retrieveff['qdelivered'];
 	$DateFF1 = $retrieveff['ffdate1'];
 	$DateFF2 = $retrieveff['ffdate2'];
 	$DateFF3 = $retrieveff['ffdate3'];
 	//$Status = $retrieveff['status'] ; 	 
-	$date_contract_signed = $retrieveff['date_contract_signed'];
+	// $date_contract_signed = $retrieveff['date_contract_signed'];
 	$appointmentdate = "";
  
 	$ProjectID = $retrieveff['projectid'];
@@ -66,21 +71,32 @@ if (!$resultff) {die("Error: Data not found..");}
 		}
 	// End
 	$SiteAddress = mysql_escape_string($retrieveclient['site_address1'])." ".mysql_escape_string($retrieveclient['site_address2'])." ".mysql_escape_string($retrieveclient['site_suburb'])." ".mysql_escape_string($retrieveclient['site_state'])." ".mysql_escape_string($retrieveclient['site_postcode']);
-	$appointmentdate = $retrieveclient['appointmentdate'];
+
+	$appointmentdate = $retrieveclient['followup_appointmentdate'];
+	$DateDelivered = $retrieveclient['qdelivered'];
+	$next_followup = $retrieveclient['next_followup'];
+	$date_contract_signed = $retrieveclient['date_contract_signed'];
 
 
 	$PreviousDateDelivered = $retrieveff['qdelivered'];
 	$PreviousQuoteStatus = $Status_;
 	$PreviousCustomisationOptions = $retrieveff['customisation_options'];
 	if (trim($appointmentdate) == '' || substr($appointmentdate, 0, strlen('0000-00-00')) == '0000-00-00') {
-		$appointmentdate = '';
-	} else {
-		$appointmentdate = date(PHP_DFORMAT,strtotime($appointmentdate));
+		$appointmentdate = $retrieveclient['appointmentdate'];
+		
+		if (trim($appointmentdate) == '' || substr($appointmentdate, 0, strlen('0000-00-00')) == '0000-00-00') {
+			$appointmentdate = '';
+		}
 	}
 	if (trim($DateDelivered) == '' || substr($DateDelivered, 0, strlen('0000-00-00')) == '0000-00-00') {
 		$DateDelivered = '';
 	} else {
 		$DateDelivered = date(PHP_DFORMAT,strtotime($DateDelivered));
+	}
+	if (trim($next_followup) == '' || substr($next_followup, 0, strlen('0000-00-00')) == '0000-00-00') {
+		$next_followup = '';
+	} else {
+		$next_followup = date(PHP_DFORMAT,strtotime($next_followup));
 	}
 	if (trim($DateFF1) == '' || substr($DateFF1, 0, strlen('0000-00-00')) == '0000-00-00') {
 		$DateFF1 = '';
@@ -526,10 +542,41 @@ if(isset($_POST['contract']) || (isset($_POST['awarded_builderid']) && strlen($_
 	echo "<input type=\"hidden\" id=\"previous_customisation_options\" name=\"previous_customisation_options\" value=\"" . $PreviousCustomisationOptions . "\" />";
 	echo "<input type=\"hidden\" id=\"current_quote_id\" name=\"current_quote_id\" value=\"" . $QuoteID . "\" />";
 	echo "<input type=\"hidden\" id=\"current_project_id\" name=\"current_project_id\" value=\"" . $ProjectID . "\" />";
+	?>
 
-	echo "<tr><td><span class=\"ffinfo\"><label>Appointment Date</label><input type=\"text\" value=\"" . $appointmentdate . "\" name=\"appointmentdate\" class=\"date_entered\" autocomplete=\"off\" readonly=\"readonly\" /></span>";
+	<tr><td>
+	<span class="ffinfo">
+		<label>Appointment Date</label>
+		<input type="text" id="iappointment" name="iappointment" class="form-control date form_datetime" data-link-field="appointmentdate" data-date-format="<?php echo JS_DFORMAT." @ HH:ii P"; ?>" readonly>
+		<input hidden type="text" value="<?php echo $appointmentdate ?>" name="appointmentdate" id="appointmentdate" autocomplete="off" readonly="readonly" />
+	</span>
+
+	<script type="text/javascript">
+		$(document).ready(function() {
+			var date = '<?php echo $appointmentdate ?>';
+			var now = new Date('<?php echo date("Y-m-d H:i:s", strtotime($appointmentdate)); ?>');
+			
+			$('.form_datetime').datetimepicker({
+				//language:  'en',
+				weekStart: 1,
+				todayBtn: 1,
+				autoclose: 1,
+				todayHighlight: 1,
+				startView: 2,
+				forceParse: 0,
+				showMeridian: 1,
+				initialDate: date === '' ? null : now  // Set initial date to properly formatted date
+			});
+			
+			// Set the value programmatically to ensure both visible and hidden fields are updated
+			date !== '' && $('.form_datetime').datetimepicker('update', now);
+		});
+	</script>
+
+	<?php
+
 	echo "<span class=\"ffinfo\"><label>Date Delivered</label><input type=\"text\" value=\"" . $DateDelivered . "\" name=\"qdelivered\" class=\"date_entered\" autocomplete=\"off\" /></span>";
-	echo " <span class=\"ffinfo\"><label>Next Follow Up</label><input type=\"text\" value=\"" . $DateFF1 . "\" name=\"ffdate1\" class=\"date_entered\" autocomplete=\"off\" /></span>";
+	echo " <span class=\"ffinfo\"><label>Next Follow Up</label><input type=\"text\" value=\"" . $next_followup  . "\" name=\"ffdate1\" class=\"date_entered\" autocomplete=\"off\" /></span>";
 	echo "<span class=\"ffinfo\"><label>Contract Delivered/Signed</label><input type=\"text\" value=\"" . $date_contract_signed . "\" name=\"date_contract_signed\" class=\"date_entered\" autocomplete=\"off\" /></span>";
 
 
