@@ -1584,9 +1584,53 @@ function get_cons_kpi_color_sign($n=0,$n_warning=0){
 			<ul id='to_do_list' class='list-table'  style='margin:0 0; width: 100%;  display:inline-block;vertical-align: top; font-size:12px;'>
 			";
 
-				$sql = "SELECT c.datelodged, c.pid, c.clientid, repident AS rep_id,  c.appointmentdate,  c.client_firstname, c.client_lastname, c.qdelivered, c.next_followup, c.is_first_appointment, n.content AS note FROM ver_chronoforms_data_clientpersonal_vic  AS c
-	 LEFT JOIN (SELECT * FROM (SELECT * FROM ver_chronoforms_data_notes_vic ORDER BY cf_id desc) as t GROUP BY clientid  ) as n ON n.clientid=c.clientid
-	 WHERE c.deleted_at IS NULL AND repident='{$user->RepID}' AND (appointmentdate IS NOT NULL OR next_followup IS NOT NULL) AND if(next_followup IS NULL,DATE(appointmentdate)<=DATE(NOW()), DATE(next_followup)<=DATE(NOW())) AND (c.status!='Won' OR c.status!='Lost') AND c.date_contract_signed IS NULL ";
+			$sql = "SELECT c.datelodged, c.pid, c.clientid, c.status, c.client_mobile AS mobile, repident AS rep_id,   
+                c.appointmentdate, c.client_firstname, c.client_lastname, 
+                c.qdelivered, c.next_followup, c.is_first_appointment, c.followup_appointmentdate,
+                n.content AS note 
+            FROM ver_chronoforms_data_clientpersonal_vic AS c
+            LEFT JOIN (
+                SELECT * 
+                FROM (
+                    SELECT * FROM ver_chronoforms_data_notes_vic 
+                    ORDER BY cf_id DESC
+                ) AS t 
+                GROUP BY clientid  
+            ) AS n ON n.clientid = c.clientid
+            WHERE 
+                c.deleted_at IS NULL 
+                AND repident = '{$user->RepID}'
+                AND (c.status NOT IN ('Won', 'Lost', 'Not Interested') OR c.status IS NULL)
+                AND (c.date_contract_signed IS NULL OR c.date_contract_signed = '0000-00-00')
+                AND
+                IF (
+                    c.followup_appointmentdate IS NULL OR c.followup_appointmentdate = '0000-00-00',
+                    DATE(c.appointmentdate) <= CURDATE(),
+                    DATE(c.followup_appointmentdate) <= CURDATE()
+                    )
+				AND IF (
+                    c.appointmentdate IS NULL OR c.appointmentdate = '0000-00-00',
+                    DATE(c.followup_appointmentdate) <= CURDATE(),
+                    DATE(c.appointmentdate) <= CURDATE()
+                    )
+                AND (
+                    c.qdelivered IS NULL
+                    OR c.qdelivered = '0000-00-00'
+                    OR (
+                        c.qdelivered IS NOT NULL
+                        AND c.qdelivered != '0000-00-00'
+                        AND DATE(c.qdelivered) <= CURDATE()
+                    )
+                )
+                AND (
+                    c.next_followup IS NULL
+                    OR c.next_followup = '0000-00-00'
+                    OR (
+                        c.next_followup IS NOT NULL
+                        AND c.next_followup != '0000-00-00'
+                        AND DATE(c.next_followup) <= CURDATE()
+                    )
+                )";
 
 	 			$fResult = mysql_query($sql);
 				$total_records1 = mysql_num_rows($fResult);
@@ -1596,6 +1640,11 @@ function get_cons_kpi_color_sign($n=0,$n_warning=0){
 
 				$fResult = mysql_query($sql);
 				$i=0;
+
+				function isEmptyDate($date) {
+                    return !isset($date) || $date === '' || $date === '0000-00-00' || $date === '0000-00-00 00:00:00';
+                }   
+
 				while ($l = mysql_fetch_assoc($fResult)) {
 
 					if($i==0){$to_do_list .= "<li class='li-header'>
@@ -1606,29 +1655,26 @@ function get_cons_kpi_color_sign($n=0,$n_warning=0){
 					$client_status = "Initial Appointment";
 					$due_date = "";
 
-					if(empty($l['qdelivered'])==true && empty($l['next_followup'])==true){
-							$client_status = "Initial Appointment";
-							$phpdate = strtotime( $l['appointmentdate'] );
-							$due_date = date( PHP_DFORMAT, $phpdate );
-							//error_log("inside 1..", 3,'C:\\xampp\htdocs\\vergola_contract_system_v4_vic\\my-error.log');
-
-					}
-
-					if(empty($l['qdelivered'])==true && isset($l['next_followup'])){
-							$client_status = "Initial Appointment";
-							$phpdate = strtotime( $l['next_followup'] );
-							$due_date = date( PHP_DFORMAT, $phpdate );
-							//error_log("inside 1..", 3,'C:\\xampp\htdocs\\vergola_contract_system_v4_vic\\my-error.log');
-
-					}
-
-					if(isset($l['qdelivered']) && isset($l['next_followup'])){
-							$client_status = "Followup";
-							$phpdate = strtotime( $l['next_followup'] );
-							$due_date = date( PHP_DFORMAT, $phpdate );
-							//error_log("inside 1..", 3,'C:\\xampp\htdocs\\vergola_contract_system_v4_vic\\my-error.log');
-
-					}
+					if (isEmptyDate($l['qdelivered']) && isEmptyDate($l['next_followup'])) {
+                        $client_status = "Initial Appointment";
+                        $phpdate = isEmptyDate($l['followup_appointmentdate']) ? strtotime($l['appointmentdate']) : strtotime($l['followup_appointmentdate']);
+                        $due_date = date(PHP_DFORMAT, $phpdate);
+                    }
+                    else if (!isEmptyDate($l['qdelivered']) && isEmptyDate($l['next_followup'])) {
+                        $client_status = "Quote Delivered";
+                        $phpdate = strtotime($l['qdelivered']);
+                        $due_date = date(PHP_DFORMAT, $phpdate);
+                    }
+                    else if (isEmptyDate($l['qdelivered']) && !isEmptyDate($l['next_followup'])) {
+                        $client_status = "Followup";
+                        $phpdate = strtotime($l['next_followup']);
+                        $due_date = date(PHP_DFORMAT, $phpdate);
+                    }
+                    else if (!isEmptyDate($l['qdelivered']) && !isEmptyDate($l['next_followup'])) {
+                        $client_status = "Followup";
+                        $phpdate = strtotime($l['next_followup']);
+                        $due_date = date(PHP_DFORMAT, $phpdate);
+                    }
 
 					// if(isset($l['qdelivered'])){
 					// 		$client_status = "Followup - Quote Delivered";
