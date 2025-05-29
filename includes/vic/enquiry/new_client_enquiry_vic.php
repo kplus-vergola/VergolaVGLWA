@@ -1537,7 +1537,7 @@ function set_notification($msg){
           <input type="text" value="<?php echo $client['site_email'] ?>" id="semail" name="semail">
         </label>
         
-        <?php if($is_builder==0){ ?>   <input type="button" value="Copy Site Address" id="sbtn" name="sbtn" class="btn">  <?php } ?>
+        <input type="button" value="Copy Site Address" id="sbtn" name="sbtn" class="btn">
 
         <?php if(false){ ?><input type="submit" value="Save Site Address" id="sbtn_save_saddress" name="save_site_address" class="btn" style="width: 395px; margin:2px 0px 5px 2px; padding: 4px;"> <?php } ?>
       </div>

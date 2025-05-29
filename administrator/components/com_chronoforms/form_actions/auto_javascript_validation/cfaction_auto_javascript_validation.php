@@ -18,6 +18,14 @@ class CfactionAutoJavascriptValidationHelper{
 		$document->addScript($uri->root().'administrator/components/com_chronoforms/form_actions/auto_javascript_validation/assets/auto_javascript_validation.js');
 		$rules = array('required', 'alpha', 'alphanum', 'digit', 'nodigit', 'number', 'email', 'phone', 'phone_inter', 'url', 'image');
 		ob_start();
+		$is_builder = 0;
+		$request = parse_url($_SERVER['REQUEST_URI']);
+		$page_name = substr($request["path"],1);
+		if($page_name == "new-builder-enquiry-vic"){
+			$is_builder = 1;
+		}else if(isset($_REQUEST['client_type']) && $_REQUEST['client_type']=="b"){
+			$is_builder = 1;
+		}
 		?>
 			window.addEvent('domready', function() {
 				<?php
@@ -27,6 +35,11 @@ class CfactionAutoJavascriptValidationHelper{
 					if(trim($params->get($rule, ''))){
 						$fields_list = explode(',', trim($params->get($rule, '')));
 					}
+
+					if($rule === 'required' && $is_builder){
+						$fields_list = array_merge($fields_list, ['ssitename', 'sstreetno', 'sstreetname', 'site_suburb', 'site_state', 'site_postcode']);
+					}
+					
 					foreach($fields_list as $k => $field){
 						$fields_list[$k] = "'".$field."'";
 					}
