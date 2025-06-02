@@ -1612,7 +1612,7 @@ function set_notification($msg){
         <?php
           //echo "<select class='last-rep' id=' ' name='lastRepId' ><option></option>";
           // $querysub3="SELECT u.RepID, u.name FROM ver_chronoforms_data_clientpersonal_vic AS c JOIN ver_users AS u ON u.RepID=c.repident WHERE c.repident != '' GROUP BY c.repident ORDER BY c.pid DESC LIMIT 10";
-         $querysub3="SELECT * FROM (SELECT * FROM (SELECT  distinct repident, pid, repid, repname, employeeid, leadid, datelodged FROM ver_chronoforms_data_clientpersonal_vic WHERE repident != '' group by repident, pid order by pid desc) AS t group by repident order by pid desc) as c JOIN ver_users AS u ON u.RepID=c.repident ORDER BY pid DESC";
+         $querysub3="SELECT * FROM (SELECT * FROM (SELECT  distinct repident, pid, repid, repname, employeeid, leadid, datelodged FROM ver_chronoforms_data_clientpersonal_vic WHERE repident != '' group by repident, pid order by pid desc) AS t group by repident order by pid desc) as c JOIN ver_users AS u ON u.RepID=c.repident ORDER BY pid DESC LIMIT 5";
           $resultsub3 = mysql_query($querysub3);
           if(!$resultsub3){die ("Could not query the database: <br />" . mysql_error());  }
           $i=0;
