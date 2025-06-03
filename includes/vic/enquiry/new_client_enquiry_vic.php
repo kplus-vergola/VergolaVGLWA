@@ -1608,7 +1608,7 @@ function set_notification($msg){
      
 ?>
     <input type="hidden" id="rep_id" value="<?php echo $RepID; ?>" />
-    <label class='' style="color:#222; display: inline-table;"><span><?php if($is_edit==0){echo 'Last Rep Allocated: ';} ?></span>  
+    <label class='' style="color:#222; display: inline-table;"><span>Last Rep Allocated: </span>  
         <?php
           //echo "<select class='last-rep' id=' ' name='lastRepId' ><option></option>";
           // $querysub3="SELECT u.RepID, u.name FROM ver_chronoforms_data_clientpersonal_vic AS c JOIN ver_users AS u ON u.RepID=c.repident WHERE c.repident != '' GROUP BY c.repident ORDER BY c.pid DESC LIMIT 10";
