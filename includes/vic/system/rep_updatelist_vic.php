@@ -233,7 +233,7 @@ function convertToMysqlDate($iDate){
 if(isset($_POST['delete']))
 {	
 
-	mysql_query("UPDATE ver_users SET status = 'deleted' WHERE id = '$id'")
+	mysql_query("UPDATE ver_users SET status = 'deleted', block = 1 WHERE id = '$id'")
 				or die(mysql_error()); 
 	echo "Deleted";
 	

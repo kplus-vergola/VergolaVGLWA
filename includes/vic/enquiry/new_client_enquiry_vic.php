@@ -931,13 +931,16 @@ $('#csuburb').change(function(){
 
 
 $('#bsbtn').click(function(){
-        if($("#uploadme").val()=='') {
-            $("#checkfile").val('No');
-        } else {
+    if($("#uploadme").val()=='') {
+        $("#checkfile").val('No');
+    } else {
       $("#checkfile").val('Yes');
     }
-    
-    });
+    if($("#dtp_appointment").val()=='') {
+        $(".fc-tbx").css('opacity', 0);
+        $(".fc-tbx").show();
+    }
+});
 
 $('#ibtn').click(function(){
         if($("#uploadme").val()=='') {
@@ -964,38 +967,113 @@ $('#ibtn').click(function(){
 </style>
 <script type="text/javascript">
     $(document).ready(function() {
+      
+      function handleAutocompleteOpen() {
+        var autocomplete = $(this).data("autocomplete") || $(this).data("ui-autocomplete");
+        if (autocomplete && autocomplete.menu && autocomplete.menu.element) {
+            // Add scroll handling for keyboard navigation
+            autocomplete.menu.element.on("menufocus", function(event, ui) {
+                var focused = ui.item;
+                if (focused && focused.length) {
+                    var menuElement = autocomplete.menu.element;
+
+                    // Calculate position of item relative to menu
+                    var position = focused.position().top;
+                    var menuHeight = menuElement.height();
+
+                    // Check if the item is outside viewable area
+                    if (position < 0) {
+                        // Scroll up if item is above visible area
+                        menuElement.scrollTop(menuElement.scrollTop() + position);
+                    } else if (position + focused.height() > menuHeight) {
+                        // Scroll down if item is below visible area
+                        menuElement.scrollTop(menuElement.scrollTop() + position - menuHeight + focused.height());
+                    }
+                }
+            });
+        }
+      }
+
         var client_config = {
             source: function(request, response) {
+                // Show loading indicator directly in the dropdown
+                response([{ label: "Loading...", value: "" }]);
+                
                 $.ajax({
                     url: "includes/vic/suburb_vic.php", 
                     dataType: "json", 
                     cache: false, 
                     type: "get", 
-                    data: {term: request.term}
-                }).done(function(data) {
-                    response(data);
+                    data: {term: request.term},
+                    success: function(data) {
+                        // Check if data is empty or only contains the error placeholder
+                        if (!data.length || (data.length === 1 && data[0].suburb === 'Error')) {
+                            response([{ label: "No matches found", value: "" }]);
+                        } else {
+                            response(data);
+                        }
+                    },
+                    error: function() {
+                        // Show error message in dropdown
+                        response([{ label: "Error loading data", value: "" }]);
+                    }
                 });
             }, 
             select: function(event, ui) {
-                $("#csuburb").val(ui.item.suburb);
-                $("#csuburbstate").val(ui.item.suburb_state);
-                $("#csuburbpostcode").val(ui.item.suburb_postcode);
-                $("#csuburb_id").val(ui.item.cf_id);
+                // Don't set values if it's one of the special message items
+                if (ui.item.suburb) {
+                    $("#csuburb").val(ui.item.suburb);
+                    $("#csuburbstate").val(ui.item.suburb_state);
+                    $("#csuburbpostcode").val(ui.item.suburb_postcode);
+                    $("#csuburb_id").val(ui.item.cf_id);
+                    return true;
+                } else {
+                    // Prevent selecting the special message items
+                    return false;
+                }
             },
-            minLength:2
+            minLength: 2,
+            open: handleAutocompleteOpen
         };
+
         $("#csuburb").autocomplete(client_config);
+
+        // Fix for clicking on whitespace - delegated event handler
+        $(document).on('mousedown', '.ui-menu-item', function(e) {
+            if (e.which === 1 && !$(this).hasClass('ui-state-disabled')) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Delay slightly to avoid recursion, then simulate a proper selection
+                setTimeout(function() {
+                    $(e.currentTarget).find('.ui-menu-item-wrapper').trigger('click');
+                }, 10);
+            }
+        });
 
         var site_config = {
             source: function(request, response) {
+
+                response([{ label: "Loading...", value: "" }]);
+
                 $.ajax({
                     url: "includes/vic/suburb_vic.php", 
                     dataType: "json", 
                     cache: false, 
                     type: "get", 
-                    data: {term: request.term}
-                }).done(function(data) {
-                    response(data);
+                    data: {term: request.term},
+                    success: function(data) {
+                        // Check if data is empty or only contains the error placeholder
+                        if (!data.length || (data.length === 1 && data[0].suburb === 'Error')) {
+                            response([{ label: "No matches found", value: "" }]);
+                        } else {
+                            response(data);
+                        }
+                    },
+                    error: function() {
+                        // Show error message in dropdown
+                        response([{ label: "Error loading data", value: "" }]);
+                    }
                 });
             }, 
             select: function(event, ui) {
@@ -1004,8 +1082,10 @@ $('#ibtn').click(function(){
                 $("#ssuburbpostcode").val(ui.item.suburb_postcode);
                 $("#ssuburb_id").val(ui.item.cf_id);
             },
-            minLength:2
+            minLength:2,
+            open: handleAutocompleteOpen
         };
+
         $("#ssuburb").autocomplete(site_config);
 
         $("#csuburbstate").keypress(function() {
@@ -1457,7 +1537,7 @@ function set_notification($msg){
           <input type="text" value="<?php echo $client['site_email'] ?>" id="semail" name="semail">
         </label>
         
-        <?php if($is_builder==0){ ?>   <input type="button" value="Copy Site Address" id="sbtn" name="sbtn" class="btn">  <?php } ?>
+        <input type="button" value="Copy Site Address" id="sbtn" name="sbtn" class="btn">
 
         <?php if(false){ ?><input type="submit" value="Save Site Address" id="sbtn_save_saddress" name="save_site_address" class="btn" style="width: 395px; margin:2px 0px 5px 2px; padding: 4px;"> <?php } ?>
       </div>
@@ -1528,11 +1608,11 @@ function set_notification($msg){
      
 ?>
     <input type="hidden" id="rep_id" value="<?php echo $RepID; ?>" />
-    <label class='' style="color:#222; display: inline-table;"><span><?php if($is_edit==0){echo 'Last Rep Allocated: ';} ?></span>  
+    <label class='' style="color:#222; display: inline-table;"><span>Last Rep Allocated: </span>  
         <?php
           //echo "<select class='last-rep' id=' ' name='lastRepId' ><option></option>";
           // $querysub3="SELECT u.RepID, u.name FROM ver_chronoforms_data_clientpersonal_vic AS c JOIN ver_users AS u ON u.RepID=c.repident WHERE c.repident != '' GROUP BY c.repident ORDER BY c.pid DESC LIMIT 10";
-         $querysub3="SELECT * FROM (SELECT * FROM (SELECT  distinct repident, pid, repid, repname, employeeid, leadid, datelodged FROM ver_chronoforms_data_clientpersonal_vic WHERE repident != '' group by repident, pid order by pid desc) AS t group by repident order by pid desc) as c JOIN ver_users AS u ON u.RepID=c.repident ORDER BY pid DESC";
+         $querysub3="SELECT * FROM (SELECT * FROM (SELECT  distinct repident, pid, repid, repname, employeeid, leadid, datelodged FROM ver_chronoforms_data_clientpersonal_vic WHERE repident != '' group by repident, pid order by pid desc) AS t group by repident order by pid desc) as c JOIN ver_users AS u ON u.RepID=c.repident ORDER BY pid DESC LIMIT 5";
           $resultsub3 = mysql_query($querysub3);
           if(!$resultsub3){die ("Could not query the database: <br />" . mysql_error());  }
           $i=0;
@@ -1714,7 +1794,7 @@ echo "</select></label>";
             <input type="text" id="iappointment" name="iappointment" class="form-control" value="<?php echo $client['fappointmentdate'] ?>" readonly>
           </label>
           <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span> <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span> </div>
-        <input type="hidden" id="dtp_appointment" name="dtp_appointment" value="<?php echo $client['appointmentdate'] ?>" />
+        <input type="hidden" id="dtp_appointment" name="dtp_appointment" value="<?php echo $client['appointmentdate'] ?>" required />
         <br/>
 
        <?php
@@ -1723,38 +1803,45 @@ echo "</select></label>";
        ?> 
 
         <script type="text/javascript">
-    $('.form_datetime').datetimepicker({
-        //language:  'en',
-        weekStart: 1,
-        todayBtn:  1,
-    autoclose: 1,
-    todayHighlight: 1,
-    startView: 2,
-    forceParse: 0,
-        showMeridian: 1
-    });
-  $('.form_date').datetimepicker({
-        language:  'en',
-        weekStart: 1,
-        todayBtn:  1,
-    autoclose: 1,
-    todayHighlight: 1,
-    startView: 2,
-    minView: 2,
-    forceParse: 0
-    });
-  $('.form_time').datetimepicker({
-        language:  'en',
-        weekStart: 1,
-        todayBtn:  1,
-    autoclose: 1,
-    todayHighlight: 1,
-    startView: 1,
-    minView: 0,
-    maxView: 1,
-    forceParse: 0
-    });
-</script> 
+
+        const isEdit = <?php echo $is_edit; ?>;
+
+        if(isEdit == 0){
+          $('.form_datetime').datetimepicker({
+              // language:  'en',
+              weekStart: 1,
+              todayBtn:  1,
+          autoclose: 1,
+          todayHighlight: 1,
+          startView: 2,
+          forceParse: 0,
+              showMeridian: 1
+          }).on('changeDate', function(ev){
+            $('.fc-tbx').fadeOut('fast');
+          });
+        }
+        $('.form_date').datetimepicker({
+              language:  'en',
+              weekStart: 1,
+              todayBtn:  1,
+          autoclose: 1,
+          todayHighlight: 1,
+          startView: 2,
+          minView: 2,
+          forceParse: 0
+          });
+        $('.form_time').datetimepicker({
+              language:  'en',
+              weekStart: 1,
+              todayBtn:  1,
+          autoclose: 1,
+          todayHighlight: 1,
+          startView: 1,
+          minView: 0,
+          maxView: 1,
+          forceParse: 0
+          });
+      </script> 
       </div>
     </div>
   </div>
