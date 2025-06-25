@@ -1791,7 +1791,7 @@ echo "</select></label>";
        echo '<input type=\'hidden\' id=\'usermail\' name=\'usermail\' value=\''.$userEmail.'\' readonly>';?>
         <div class="input-group date form_datetime col-md-5" data-date-format="<?php echo JS_DFORMAT." @ HH:ii P"; ?>" data-link-field="dtp_appointment" style="display:inline-block">
           <label class='input'><span id='date-entered'>Appointment: </span>
-            <input type="text" id="iappointment" name="iappointment" class="form-control validate['required']" value="<?php echo $client['fappointmentdate'] ?>" readonly>
+            <input type="text" id="iappointment" name="iappointment" class="form-control" value="<?php echo $client['fappointmentdate'] ?>" readonly>
           </label>
           <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span> <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span> </div>
         <input type="hidden" id="dtp_appointment" name="dtp_appointment" value="<?php echo $client['appointmentdate'] ?>" required />
