@@ -193,7 +193,12 @@ $check_measurer = mysql_real_escape_string($_POST['checkmeasurer']);
 $controller_sn = mysql_real_escape_string($_POST['controllersn']); 
 $controller_pw = mysql_real_escape_string($_POST['controllerpw']); 
 $drawing_followup_by = mysql_real_escape_string($_POST['drawingfollowupby']); 
-$client_notified_by = mysql_real_escape_string($_POST['clientnotifiedby']); 
+$client_notified_by = mysql_real_escape_string($_POST['clientnotifiedby']);
+
+$fix2_start_erectors_name = mysql_real_escape_string($_POST['fix2start_erectorsname']);
+$fix2_end_erectors_name = mysql_real_escape_string($_POST['fix2end_erectorsname']);
+$fix3_start_erectors_name = mysql_real_escape_string($_POST['fix3start_erectorsname']);
+$fix3_end_erectors_name = mysql_real_escape_string($_POST['fix3end_erectorsname']);
 
 $check_measure_date = "NULL";
 if (strlen($_POST['checkdate']) && $_POST['checkdate'] != "0000-00-00 00:00:00"){
@@ -343,7 +348,39 @@ if (strlen($_POST['time_frame_letter']) && $_POST['time_frame_letter'] != "0000-
 $schedule_completion = "NULL"; 
 if (strlen($_POST['schedule_completion']) && $_POST['schedule_completion'] != "0000-00-00 00:00:00"){
   $schedule_completion = "'".date('Y-m-d H:i:s', strtotime(mysql_real_escape_string($_POST['schedule_completion'])))."'";
+}
+
+$sched_install_date_fix2_visible = "No";
+if (strlen($_POST['sched_install_date_fix2_visible'])){
+  $sched_install_date_fix2_visible = "'".mysql_real_escape_string($_POST['sched_install_date_fix2_visible'])."'";
+  // $job_date_fix2_visible = "'".mysql_real_escape_string($_POST['sched_install_date_fix2_visible'])."'";
+}
+
+$sched_install_date_fix3_visible = "No";
+if (strlen($_POST['sched_install_date_fix3_visible'])){
+  $sched_install_date_fix3_visible = "'".mysql_real_escape_string($_POST['sched_install_date_fix3_visible'])."'";
+  // $job_date_fix3_visible = "'".mysql_real_escape_string($_POST['sched_install_date_fix3_visible'])."'";
+}
+
+$sched_install_date_fix2_start = "NULL";
+if (strlen($_POST['sched_install_date_fix2_start']) && $_POST['sched_install_date_fix2_start'] != "0000-00-00 00:00:00"){
+  $sched_install_date_fix2_start = "'".date('Y-m-d H:i:s', strtotime(mysql_real_escape_string($_POST['sched_install_date_fix2_start'])))."'";
+}
+
+$sched_install_date_fix2_end = "NULL";
+if (strlen($_POST['sched_install_date_fix2_end']) && $_POST['sched_install_date_fix2_end'] != "0000-00-00 00:00:00"){
+  $sched_install_date_fix2_end = "'".date('Y-m-d H:i:s', strtotime(mysql_real_escape_string($_POST['sched_install_date_fix2_end'])))."'";
+}
+
+$sched_install_date_fix3_start = "NULL";
+if (strlen($_POST['sched_install_date_fix3_start']) && $_POST['sched_install_date_fix3_start'] != "0000-00-00 00:00:00"){
+  $sched_install_date_fix3_start = "'".date('Y-m-d H:i:s', strtotime(mysql_real_escape_string($_POST['sched_install_date_fix3_start'])))."'";
 } 
+
+$sched_install_date_fix3_end = "NULL";
+if (strlen($_POST['sched_install_date_fix3_end']) && $_POST['sched_install_date_fix3_end'] != "0000-00-00 00:00:00"){
+  $sched_install_date_fix3_end = "'".date('Y-m-d H:i:s', strtotime(mysql_real_escape_string($_POST['sched_install_date_fix3_end'])))."'";
+}
 
 $enable_update_contract_vergola = false;
 if (isset($_POST['checkdate'])) {
@@ -385,7 +422,19 @@ if ($enable_update_contract_vergola == true) {
     controller_sn = '{$controller_sn}',
     controller_pw = '{$controller_pw}',
     drawing_followup_by = '{$drawing_followup_by}',
-    client_notified_by = '{$client_notified_by}'
+    client_notified_by = '{$client_notified_by}',
+    sched_install_date_fix2_start = {$sched_install_date_fix2_start},
+    sched_install_date_fix2_end = {$sched_install_date_fix2_end},
+    sched_install_date_fix3_start = {$sched_install_date_fix3_start},
+    sched_install_date_fix3_end = {$sched_install_date_fix3_end},
+
+    sched_install_date_fix2_visible = {$sched_install_date_fix2_visible},
+    sched_install_date_fix3_visible = {$sched_install_date_fix3_visible},
+
+    fix2_start_erectors_name = '{$fix2_start_erectors_name}',
+    fix2_end_erectors_name = '{$fix2_end_erectors_name}',
+    fix3_start_erectors_name = '{$fix3_start_erectors_name}',
+    fix3_end_erectors_name = '{$fix3_end_erectors_name}'
     WHERE projectid = '$projectid'"; 
     mysql_query($sql) or die(mysql_error()); 
 }
@@ -1436,7 +1485,13 @@ if(isset($_POST['close']))
 			DATE_FORMAT( cancellation_date, '".SQL_DFORMAT."' ) fcancellation_date,
 			DATE_FORMAT( cancellation_fee_amount, '".SQL_DFORMAT."' ) fcancellation_fee_amount,
 			DATE_FORMAT( balanceowning_amount, '".SQL_DFORMAT."' ) fbalanceowning_amount,
-			DATE_FORMAT( cancellationpaid_date, '".SQL_DFORMAT."' ) fcancellationpaid_date 
+			DATE_FORMAT( cancellationpaid_date, '".SQL_DFORMAT."' ) fcancellationpaid_date,
+      DATE_FORMAT( sched_install_date_fix2_start, '".SQL_DFORMAT."' ) fsched_install_date_fix2_start,
+      DATE_FORMAT( sched_install_date_fix2_end, '".SQL_DFORMAT."' ) fsched_install_date_fix2_end,
+      DATE_FORMAT( sched_install_date_fix3_start, '".SQL_DFORMAT."' ) fsched_install_date_fix3_start,
+      DATE_FORMAT( sched_install_date_fix3_end, '".SQL_DFORMAT."' ) fsched_install_date_fix3_end,
+      sched_install_date_fix2_visible AS fsched_install_date_fix2_visible,
+      sched_install_date_fix3_visible AS fsched_install_date_fix3_visible
 		FROM
 			ver_chronoforms_data_contract_vergola_vic 
 		WHERE
@@ -1694,7 +1749,93 @@ if(isset($_POST['close']))
             </label>   
              <label class="input " style="visibility:hidden"><span class="visible">&nbsp; </span><input type="text" value="" name=" " class=" "></label>
              <label class="input "><span class="visible">Louvers Complete: </span><input type="text" value="<?php echo $contract_vergola['flouvers_complete']; ?>" name="louvers_complete" class="date_entered" autocomplete="off"></label> 
-          </div> 
+          </div>
+
+          <?php
+            $querysub_str="SELECT * FROM ver_chronoforms_data_installer_vic Where block=0 ORDER BY name ASC";
+
+            // Begin construct object for Sched Install  
+            $cbo_installer1 = "<select    name=\"erectors_name\" id=\"erectors_nameid\"  style='width:104%; padding:0px'><option value=''>Select Installer 1: </option>"; 
+            $querysub= $querysub_str;
+            $resultsub = mysql_query($querysub);
+                if(!$resultsub){die ("Could not query the database: <br />" . mysql_error()); }
+
+            while ($data=mysql_fetch_assoc($resultsub)){  
+                if($data['name']==$contract_vergola['erectors_name']){ 
+                    $cbo_installer1 .= "<option value = \"".addslashes($data['name'])."\" selected>{$data['name']}</option>";
+                }else{
+                    $cbo_installer1 .= "<option value = \"".addslashes($data['name'])."\">{$data['name']}</option>"; } 
+            }       
+            $cbo_installer1 .= "</select>"; 
+
+            $cbo_installer2 = "<select    name=\"erectors_name2\" id=\"erectors_name2id\"  style='width:104%; padding:0px'><option value=''>Select Installer 2: </option>"; 
+            $querysub= $querysub_str;
+            $resultsub = mysql_query($querysub);
+                if(!$resultsub){die ("Could not query the database: <br />" . mysql_error()); }
+
+            while ($data=mysql_fetch_assoc($resultsub)){  
+                if($data['name']==$contract_vergola['erectors_name2']){ 
+                    $cbo_installer2 .= "<option value = \"".addslashes($data['name'])."\" selected>{$data['name']}</option>";
+                }else{
+                    $cbo_installer2 .= "<option value = \"".addslashes($data['name'])."\">{$data['name']}</option>"; } 
+            }       
+            $cbo_installer2 .= "</select>";     
+
+            // Begin construct object for Sched Install fix2 
+            $cbo_fix2_start_erectors_name = "<select    name=\"fix2start_erectorsname\" id=\"fix2start_erectorsnameid\"  style='width:104%; padding:0px'><option value=''>Select Installer Fix Start 2: </option>"; 
+            $querysub= $querysub_str;
+            $resultsub = mysql_query($querysub);
+                if(!$resultsub){die ("Could not query the database: <br />" . mysql_error()); }
+
+            while ($data=mysql_fetch_assoc($resultsub)){  
+                if($data['name']==$contract_vergola['fix2_start_erectors_name']){ 
+                    $cbo_fix2_start_erectors_name .= "<option value = \"".addslashes($data['name'])."\" selected>{$data['name']}</option>";
+                }else{
+                    $cbo_fix2_start_erectors_name .= "<option value = \"".addslashes($data['name'])."\">{$data['name']}</option>"; } 
+            }       
+            $cbo_fix2_start_erectors_name .= "</select>"; 
+
+            $cbo_fix2_end_erectors_name = "<select    name=\"fix2end_erectorsname\" id=\"fix2end_erectorsnameid\"  style='width:104%; padding:0px'><option value=''>Select Installer Fix End 2: </option>"; 
+            $querysub= $querysub_str;
+            $resultsub = mysql_query($querysub);
+                if(!$resultsub){die ("Could not query the database: <br />" . mysql_error()); }
+
+            while ($data=mysql_fetch_assoc($resultsub)){  
+                if($data['name']==$contract_vergola['fix2_end_erectors_name']){ 
+                    $cbo_fix2_end_erectors_name .= "<option value = \"".addslashes($data['name'])."\" selected>{$data['name']}</option>";
+                }else{
+                    $cbo_fix2_end_erectors_name .= "<option value = \"".addslashes($data['name'])."\">{$data['name']}</option>"; } 
+            }       
+            $cbo_fix2_end_erectors_name .= "</select>";     
+
+
+            // Begin construct object for Sched Install fix3 
+            $cbo_fix3_start_erectors_name = "<select    name=\"fix3start_erectorsname\" id=\"fix3start_erectorsnameid\"  style='width:104%; padding:0px'><option value=''>Select Installer Fix Start 3: </option>"; 
+            $querysub= $querysub_str;
+            $resultsub = mysql_query($querysub);
+                if(!$resultsub){die ("Could not query the database: <br />" . mysql_error()); }
+
+            while ($data=mysql_fetch_assoc($resultsub)){  
+                if($data['name']==$contract_vergola['fix3_start_erectors_name']){ 
+                    $cbo_fix3_start_erectors_name .= "<option value = \"".addslashes($data['name'])."\" selected>{$data['name']}</option>";
+                }else{
+                    $cbo_fix3_start_erectors_name .= "<option value = \"".addslashes($data['name'])."\">{$data['name']}</option>"; } 
+            }       
+            $cbo_fix3_start_erectors_name .= "</select>"; 
+
+            $cbo_fix3_end_erectors_name = "<select    name=\"fix3end_erectorsname\" id=\"fix3end_erectorsnameid\"  style='width:104%; padding:0px'><option value=''>Select Installer Fix End 3: </option>"; 
+            $querysub= $querysub_str;
+            $resultsub = mysql_query($querysub);
+                if(!$resultsub){die ("Could not query the database: <br />" . mysql_error()); }
+
+            while ($data=mysql_fetch_assoc($resultsub)){  
+                if($data['name']==$contract_vergola['fix3_end_erectors_name']){ 
+                    $cbo_fix3_end_erectors_name .= "<option value = \"".addslashes($data['name'])."\" selected>{$data['name']}</option>";
+                }else{
+                    $cbo_fix3_end_erectors_name .= "<option value = \"".addslashes($data['name'])."\">{$data['name']}</option>"; } 
+            }       
+            $cbo_fix3_end_erectors_name .= "</select>";     
+          ?>
 
           <div class="label-input-row">  
             <label class="input checkmeasure">
@@ -1705,42 +1846,15 @@ if(isset($_POST['close']))
               <span class="visible">Sched. Completion: </span>
               <input type="text" value="<?php echo $contract_vergola['fschedule_completion']; ?>" name="schedule_completion" class="date_entered" autocomplete="off">
             </label>
-            <label class="input " style="visibility:hidden"><span class="visible">&nbsp; </span><input type="text" value="" name=" " class=" "></label>
-              
-          </div>
-
-          <?php
-            $cbo_installer1 = "<select    name=\"erectors_name\" style='width:107%;'><option value=''>Select Installer 1</option>"; 
-            $querysub="SELECT * FROM ver_chronoforms_data_installer_vic ORDER BY name ASC";
-
-                        $resultsub = mysql_query($querysub);
-                            if(!$resultsub){die ("Could not query the database: <br />" . mysql_error()); }
-                        
-                        while ($data=mysql_fetch_assoc($resultsub)){  
-
-                            if($data['name']==$contract_vergola['erectors_name']){ 
-                                $cbo_installer1 .= "<option value = \"".addslashes($data['name'])."\" selected>{$data['name']}</option>";
-                            }else{
-                                $cbo_installer1 .= "<option value = \"".addslashes($data['name'])."\">{$data['name']}</option>";
-                            } 
-                        }
-            $cbo_installer1 .= "</select>"; 
-
-
-            $cbo_installer2 = "<select name=\"erectors_name2\" style='width:107%;'><option value=''>Select Installer 2</option>";  
-                        mysql_data_seek($resultsub, 0);   
-                          
-                        while ($data=mysql_fetch_assoc($resultsub)){  
-
-                            if($data['name']==$contract_vergola['erectors_name2']){ 
-                                $cbo_installer2 .= "<option value = \"".addslashes($data['name'])."\" selected>{$data['name']}</option>";
-                            }else{
-                                $cbo_installer2 .= "<option value = \"".addslashes($data['name'])."\">{$data['name']}</option>";
-                            } 
-                        }
-            $cbo_installer2 .= "</select>"; 
-
-          ?> 
+            <!-- <label class="input " style="visibility:hidden"><span class="visible">&nbsp; </span><input type="text" value="" name=" " class=" "></label> -->
+            <label class="input checkmeasure">
+              <span class="visible">Add another fix date: </span>
+              <select class="visible" style="width:104%; padding:0 0 0 175px;" name="sched_install_date_fix2_visible" id="sched_install_date_fix2_visible" class="" onchange="showDiv('sched_install_date_fix2', this)">
+                  <option value="<?php echo $contract_vergola['fsched_install_date_fix2_visible']; ?>" selected="selected"><?php echo $contract_vergola['fsched_install_date_fix2_visible']; ?></option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+              </select>
+            </label>  
 
           <div class="label-input-row"> 
             <label class="input checkmeasure"> 
@@ -1752,8 +1866,69 @@ if(isset($_POST['close']))
                 <?php echo $cbo_installer2; ?>
             </label>
             <label class="input " style="visibility:hidden"><span class="visible">&nbsp; </span><input type="text" value="" name=" " class=" "></label>
-
+          </div>
         </div>
+
+        <div class="label-input-row" name="sched_install_date_fix2 box" id="sched_install_date_fix2">  
+          <label class="input checkmeasure">
+              <span class="visible">Sched. Fix2 Install Date: </span>
+              <input type="text" value="<?php echo $contract_vergola['fsched_install_date_fix2_start']; ?>" name="sched_install_date_fix2_start" class="date_entered" autocomplete="off">
+          </label>
+          <label class="input checkmeasure">
+              <span class="visible">Sched. Fix2 Install Completion: </span>
+              <input type="text" value="<?php echo $contract_vergola['fsched_install_date_fix2_end']; ?>" name="sched_install_date_fix2_end" class="date_entered" autocomplete="off">
+          </label>
+          <label class="input checkmeasure">
+              <span class="visible">Add another fix date: </span>
+                <select class="visible" style="width:104%; padding:0 0 0 175px;" name="sched_install_date_fix3_visible" id="sched_install_date_fix3_visible" value="" class="" onchange="showDiv('sched_install_date_fix3', this)">
+                    <option value="<?php echo $contract_vergola['fsched_install_date_fix3_visible']; ?>" selected="selected"><?php echo $contract_vergola['fsched_install_date_fix3_visible']; ?></option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+          </label>  
+
+          <div class="label-input-row"> 
+            <label class="input checkmeasure"> 
+                <!-- <input type="text" value="<?php echo $contract_vergola['erectors_name']; ?>" id="erectors" name="erectors_name" style=" ">  -->
+                <?php echo $cbo_fix2_start_erectors_name; ?>
+            </label>
+            <label class="input checkmeasure">
+                <!-- <input type="text" value="<?php echo $contract_vergola['erectors_name2']; ?>" id="erectors2" name="erectors_name2" style=" ">  -->
+                <?php echo $cbo_fix2_end_erectors_name; ?>
+            </label>
+            <label class="input " style="visibility:hidden"><span class="visible">&nbsp; </span><input type="text" value="" name=" " class=" "></label>
+          </div>
+        </div> 
+
+        <div class="label-input-row" name="sched_install_date_fix3" id="sched_install_date_fix3">
+            <label class="input checkmeasure">
+                <span class="visible">Sched. Fix3 Install Date: </span>
+                <input type="text" value="<?php echo $contract_vergola['fsched_install_date_fix3_start']; ?>" name="sched_install_date_fix3_start" class="date_entered" autocomplete="off">
+            </label>
+            <label class="input checkmeasure">
+                <span class="visible">Sched. Fix3 Install Completion: </span>
+                <input type="text" value="<?php echo $contract_vergola['fsched_install_date_fix3_end']; ?>" name="sched_install_date_fix3_end" class="date_entered" autocomplete="off">
+            </label>
+            <label class="input checkmeasure" style="visibility:hidden;">
+                <span class="visible">Add another fix date: </span>
+                  <select class="visible" style="width:104%; padding:0 0 0 175px;" name="" id="" class="" onchange="showDiv('hidden_div', this)">
+                      <option value="Yes">Yes</option>
+                      <option value="No">No</option>
+                  </select>
+            </label>  
+
+            <div class="label-input-row"> 
+              <label class="input checkmeasure"> 
+                  <!-- <input type="text" value="<?php echo $contract_vergola['erectors_name']; ?>" id="erectors" name="erectors_name" style=" ">  -->
+                  <?php echo $cbo_fix3_start_erectors_name; ?>
+              </label>
+              <label class="input checkmeasure">
+                  <!-- <input type="text" value="<?php echo $contract_vergola['erectors_name2']; ?>" id="erectors2" name="erectors_name2" style=" ">  -->
+                  <?php echo $cbo_fix3_end_erectors_name; ?>
+              </label>
+              <label class="input " style="visibility:hidden"><span class="visible">&nbsp; </span><input type="text" value="" name=" " class=" "></label>
+            </div>
+        </div> 
             
           <div class="label-input-row">       
             <label class="input clientnotified"><span class="visible">Client Notified: </span><input type="text" value="<?php echo $contract_vergola['fclient_notified_date']; ?>" name="clientnotified" class="date_entered" autocomplete="off"></label>
@@ -3796,7 +3971,36 @@ if ($('#council option:selected').val() == 'By Vergola'){
   }
 });
 
+$(document).ready(function(){
+    document.getElementById('sched_install_date_fix2').style.display = $('#sched_install_date_fix2_visible option:selected').val() == 'Yes' ? 'block' : 'none';
+    document.getElementById('sched_install_date_fix3').style.display = $('#sched_install_date_fix3_visible option:selected').val() == 'Yes' ? 'block' : 'none';
+    document.getElementById('job_date_fix2').style.display = $('#job_date_fix2_visible option:selected').val() == 'Yes' ? 'block' : 'none';
+    document.getElementById('job_date_fix3').style.display = $('#job_date_fix3_visible option:selected').val() == 'Yes' ? 'block' : 'none';
 
+    $("select").change(function(){
+        $(this).find("option:selected").each(function(){
+            var optionValue = $(this).attr("value");
+            if(optionValue){
+                $(".box").not("." + optionValue).hide();
+                $("." + optionValue).show();
+            } else{
+                $(".box").hide();
+            }
+        });
+    }).change();
+});
+
+function showDiv(divId, element) {
+   document.getElementById(divId).style.display = element.value == 'Yes' ? 'block' : 'none';
+   if((divId) == "sched_install_date_fix2"){
+    document.getElementById('sched_install_date_fix2').style.display = element.value == 'Yes' ? 'block' : 'none';
+    document.getElementById('job_date_fix2').style.display = element.value == 'Yes' ? 'block' : 'none';
+    }
+    else if((divId) == "sched_install_date_fix3"){
+     document.getElementById('sched_install_date_fix3').style.display = element.value == 'Yes' ? 'block' : 'none';
+     document.getElementById('job_date_fix3').style.display = element.value == 'Yes' ? 'block' : 'none';
+     }        
+}
 
 function delete_pdf_letter(event,o){
   if(confirm('Are you sure you want to delete document?')){
